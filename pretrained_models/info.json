@@ -1,0 +1,24 @@
+{
+	"jp": {
+		"enable": true,
+		"name_en": "jp",
+		"name_zh": "日语",
+        "title": " ",
+        "cover": " ",
+		"sid": 303,
+		"example": "今日はいい天気ですね。",
+		"language": "Japanese",
+		"type": "multi"
+    },
+	"cn": {
+		"enable": true,
+		"name_en": "cn",
+		"name_zh": "中文",
+        "title": " ",
+        "cover": " ",
+		"sid": 124,
+		"example": "今天晚上吃啥好呢",
+		"language": "Chinese",
+		"type": "multi"
+    }
+}

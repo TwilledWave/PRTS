@@ -1,0 +1,4 @@
+*.ini
+*.pyc
+*checkpoint.*
+*.pth
