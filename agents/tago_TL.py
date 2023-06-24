@@ -12,6 +12,8 @@ from langchain.schema import (
 )
 from langchain.output_parsers import RegexParser
 
+#customized agent for TL to JP
+#the TL will add lots of intergection words such as Ah, Wah
 class AgentTL():
     @classmethod
     def __init__(self, model):
