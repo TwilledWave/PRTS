@@ -2,3 +2,8 @@
 *.pyc
 *checkpoint.*
 *.pth
+*nsfw*
+chat.wav
+chatJP.wav
+
+test/
