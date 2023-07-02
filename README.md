@@ -9,3 +9,4 @@ It uses LangChain agents to expend functionality. The agents are defined in the 
 The main script calls the agent scripts for specific functions. It supports:
 1. Google search.
 2. Write / read reminder.
+3. Summarize CSV data table.
