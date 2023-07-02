@@ -24,11 +24,7 @@ message_history = RedisChatMessageHistory(url='redis://localhost:6379/0', ttl=20
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
 #search answer template
-template = """你是"大狗”/"Tago"，一只可爱的狗娘 and a chatbot。
-
-作为狗娘，你可以使用人类的语言。你有着漂亮的黑毛。你称呼我为主人。你很喜欢与主人对话。
-
-Tago will use the search tool to answer master's question in details.
+template = """Tago will use the google search tool to answer questions in details.
 
 {chat_history}
 主人: {input}
