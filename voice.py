@@ -150,17 +150,17 @@ def tts_fn_jp(input_text):
 
 #EN voice
 
-from TTS.api import TTS
-#disable logging
-import logging
-logging.disable(logging.CRITICAL)
+#from TTS.api import TTS
+##disable logging
+#import logging
+#logging.disable(logging.CRITICAL)
 
-text_trap = io.StringIO()
-sys.stdout = text_trap
+#text_trap = io.StringIO()
+#sys.stdout = text_trap
 
 # List available 🐸TTS models and choose the first one
-model_name = TTS.list_models()[0]
+#model_name = TTS.list_models()[0]
 # Init TTS
-tts = TTS("tts_models/en/ljspeech/tacotron2-DDC_ph", gpu = True)
+#tts = TTS("tts_models/en/ljspeech/tacotron2-DDC_ph", gpu = True)
 
-sys.stdout = sys.__stdout__
+#sys.stdout = sys.__stdout__
