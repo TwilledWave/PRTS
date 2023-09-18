@@ -11,6 +11,5 @@ Agents can be added to the 'agents' folder. Their definations are in the agents_
 The main script calls the agent scripts for specific functions. It supports:
 1. Google search.
 2. Write / read reminder.
-3. Summarize finance news about US stock.
+3. Summarize Arknights lore and store it in vector db for furture use.
 
-Will improve finance news summary in the next updates.
