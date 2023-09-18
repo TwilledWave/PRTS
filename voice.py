@@ -33,7 +33,7 @@ device = torch.device('cuda')
 _ = net_g_ms.eval().to(device)
 
 sid = info['sid']
-input_text = "高雄型重巡洋艦二番艦、第二艦隊旗艦の愛宕よ。私の元で結構多くの姉妹たちが戦っていたもの。どんな任務でもお姉さんに任せてね。うふふ……"
+input_text = "うふふ……"
 lang = 0
 ns = 0.6
 nsw = 0.668

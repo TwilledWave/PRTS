@@ -22,6 +22,8 @@ config.read('./keys.ini')
 openai_api_key = config['OPENAI']['OPENAI_API_KEY']
 os.environ['OPENAI_API_KEY'] = openai_api_key
 os.environ['SERPAPI_API_KEY'] = config['SERPAPI']['SERPAPI_API_KEY']
+os.environ['GOOGLE_API_KEY'] = config['GOOGLE']['GOOGLE_API_KEY']
+os.environ['GOOGLE_CSE_ID'] = config['GOOGLE']['GOOGLE_CSE_ID']
 os.environ['PINECONE_API_KEY'] = config['PINECONE']['PINECONE_API_KEY']
 os.environ['PINECONE_API_ENV'] = config['PINECONE']['PINECONE_API_ENV']
 os.environ['APIFY_API_TOKEN'] = config['APIFY']['APIFY_API_KEY']

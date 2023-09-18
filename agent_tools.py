@@ -19,8 +19,8 @@ tools = [
         description="useful for when you read a reminder."
     ),
     Tool(
-        name = "Google Search",
-        func=tago_search.agent_chain.run,
+        name = "Search",
+        func=tago_search_index.agent.run,
         description="useful for when you need to search for info"
     ),
     Tool(
