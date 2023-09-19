@@ -31,7 +31,19 @@ from agent_tools import tools
 message_history = RedisChatMessageHistory(url='redis://localhost:6379/0', ttl=600, session_id='buffer')
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
-prefix = """You are Tago, an AI assistant. You want to select a tool and use the selected tool to best answer the question. You will return the response from the tool."""
+#add the tool that allows agent to clear her own memory
+def clear_memory(x:str):
+    memory.clear();
+
+tools += [
+    Tool(
+        name = "clear memory",
+        func=clear_memory,
+        description="clear chat history and memory"
+    )
+]
+
+prefix = """You are Tago, an AI assistant. You will first answer questions from your chat history. Only if no answers are available from your chat history, you will select a tool and use the selected tool to answer the question. """
 suffix = """Begin!"
 
 {chat_history}
@@ -96,7 +108,7 @@ stop_listening = r.listen_in_background(m, callback, phrase_time_limit = 2)
 # `stop_listening` is now a function that, when called, stops background listening
 
 # do some unrelated computations for 5 seconds
-for _ in range(1000): 
+for _ in range(10000): 
     if keyboard == True:
         print('You: ... ')            
         audio_out = input();
