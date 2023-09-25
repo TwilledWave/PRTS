@@ -32,7 +32,7 @@ message_history = RedisChatMessageHistory(url='redis://localhost:6379/0', ttl=60
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
 #add the tool that allows agent to clear her own memory
-def clear_memory(x:str):
+def clear_memory():
     memory.clear();
 
 tools += [

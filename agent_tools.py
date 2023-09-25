@@ -20,9 +20,20 @@ tools = [
     # ),
     Tool(
         name = "Search",
-        func=tago_search_index.agent.run,
+        #func=tago_search_index.agent.run,
+        func=tago_googlesearch.agent.run,
         description="useful for when you need to search for info"
     ),
+    Tool(
+        name = "Web Summary",
+        func=websummary.run,
+        description="summarize webpage by links"
+    ),
+    Tool(
+        name = "Web Scrap",
+        func=webscrap.webscrap,
+        description="browser one url and return the list of relevant page links"
+    ),    
     # Tool(
     #     name = "CSV tool",
     #     func=tago_csv.agent.run,

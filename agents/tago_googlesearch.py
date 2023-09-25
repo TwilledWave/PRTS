@@ -30,6 +30,7 @@ tools = [tool]
 agent = initialize_agent(
     tools,
     llm,
+    handle_parsing_errors=True,
     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
     verbose=True,
 )

@@ -39,7 +39,7 @@ def load_add(link:str):
     #load the link from web; then add the content of the link to database
     loader = WebBaseLoader(link)
     #split the webpage if too long
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 5000, chunk_overlap = 0)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 5000, chunk_overlap = 100)
     docs = loader.load_and_split(text_splitter)
     this_id = str(abs(hash(link)) % (10 ** 8))
     this_list =[this_id + "_" + "{0:0=4d}".format(x) for x in range(len(docs))]
@@ -58,23 +58,15 @@ def search_store(query:str):
             load_add(r['link'])
     return('RUN SUCCESS: search completed and results stored in vector db')
 
-from langchain.chains import RetrievalQA
-llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0)
-qa_chain = RetrievalQA.from_chain_type(llm,retriever=db.as_retriever(), chain_type="map_reduce", return_source_documents=True)
+from langchain.chains import RetrievalQA, RetrievalQAWithSourcesChain
+llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0.4)
+#qa_chain = RetrievalQA.from_chain_type(llm,retriever=db.as_retriever(), return_source_documents=True)
+qa_chain = RetrievalQAWithSourcesChain.from_chain_type(llm,retriever=db.as_retriever())
 
 #query the results in the vector db
 def query_db(query:str):
-    return(qa_chain({"query": query}))
-         
+    return(qa_chain({"question": query}, return_only_outputs=True))
 
-from langchain.chains import RetrievalQA
-llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0)
-qa_chain = RetrievalQA.from_chain_type(llm,retriever=db.as_retriever())
-
-#query the results in the vector db
-def query_db(query:str):
-    return(qa_chain({"query": query}))
-         
 tools = load_tools(["python_repl"])
 tools += [
     Tool(
@@ -89,13 +81,39 @@ tools += [
     ),
 ]
 
+PREFIX = """You are an AI language model assistant to query questions. 
+You split the question into multiple terms to conduct multiple searches and queries. Then combine the results from multiple queries.
+
+You have access to the following tools:"""
+
+FORMAT_INSTRUCTIONS = """Use the following format:
+
+Question: the input question you must answer
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question"""
+
+SUFFIX = """Begin!
+
+Question: {input}
+Thought:{agent_scratchpad}"""
 
 #use .ZERO_SHOT_REACT_DESCRIPTION for single input tools
 agent = initialize_agent(
     tools, 
     llm, 
     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, 
-    verbose=True
+    verbose=True,
+    handle_parsing_errors=True,
+    agent_kwargs={
+        'prefix':PREFIX,
+        'format_instructions':FORMAT_INSTRUCTIONS,
+        'suffix':SUFFIX
+    }
 )
 
             
