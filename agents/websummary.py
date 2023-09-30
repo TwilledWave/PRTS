@@ -22,8 +22,8 @@ def web_loader(link:str):
     loader = WebBaseLoader(link)
     docs = loader.load()
     #splitter
-    #text_splitter = RecursiveCharacterTextSplitter(chunk_size = 4000, chunk_overlap = 500)
-    #all_splits = text_splitter.split_documents(docs)
+    #text_splitter = RecursiveCharacterTextSplitter(chunk_size = 3000, chunk_overlap = 500)
+    #docs = text_splitter.split_documents(docs)
     return docs
 
 
@@ -36,9 +36,9 @@ def story_summary(docs):
     #input: docs of the web page
 
     # Define prompt
-    prompt_template = """Write a detailed summary of the story dialogue. List each section seperately:
+    prompt_template = """Write a detailed summary of the story. List each section seperately.:
     "{text}"
-    DETAILED SUMMARY:"""
+    Output ONLY the story summary:"""
     prompt = PromptTemplate.from_template(prompt_template)
 
     # Define LLM chain
@@ -61,7 +61,7 @@ def meta_summary(docs):
     The input is an html page.
     Extract the following from the html page input
     1. the title, 
-    2. the category episode from the category
+    2. a list of category, seperated by comma
     3. list of characters, seperated by comma
     4. the overall fandom / genere that the pages belong to
 
@@ -70,18 +70,18 @@ def meta_summary(docs):
     prompt = PromptTemplate.from_template(prompt_template)
     
     #input the docs and prompt 
-    llm = ChatOpenAI(temperature=0, model="gpt-4")
+    llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k")
 
     from langchain.chains import create_extraction_chain
 
     schema = {
         "properties": {
             "title": {"type": "string"},
-            "episode": {"type": "string"},
+            "category": {"type": "string"},
             "characters": {"type": "string"},
             "fandom": {"type": "string"},
         },
-        "required": ["title","episode","characters","fandom"],
+        "required": ["title","category","characters","fandom"],
     }
 
     extracted_content = create_extraction_chain(schema=schema, prompt=prompt, llm=llm).run(docs[0].page_content)
@@ -116,14 +116,17 @@ def websummary(link:str):
 #main function, summarize a list of web page then write to vector db
 def run(link:str):
     #input: a list of link of the web page to summarize
-    import re
+    import re, time
     link_list = re.findall('[\w/.\:\#\-]+',link)
     for l in link_list:
+        time.sleep(15)
         if "https:" not in l:
-            print(websummary("https://"+l));
+            l = "https://"+l;
+        print(websummary(l));
+    return("summarize run successful")
         
-link = "https://arknights.fandom.com/wiki/R8-1/Story"
-print(websummary(link))
+#link = "https://arknights.fandom.com/wiki/R8-1/Story"
+#print(websummary(link))
                
 #link = "['arknights.fandom.com//wiki/R8-1/Story', 'arknights.fandom.com//wiki/R8-2/Story']"
 #print(run(link))

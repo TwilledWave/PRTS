@@ -70,7 +70,8 @@ def webscrap(link:str):
 
     #extract the first link as the main link
     import re
-    main_link = re.search("[\w.]+",text)[0]
+    #main_link = re.search("[\w.]+",text)[0]
+    main_link = "arknights.fandom.com"
     
     #add the main link
     res = []
