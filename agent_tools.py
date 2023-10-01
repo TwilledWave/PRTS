@@ -23,7 +23,7 @@ tools = [
         #func=tago_search_index.agent.run,
         #func=tago_googlesearch.agent.run,
         func=tago_googlesearch.top_results,
-        description="find the URL web link through google search"
+        description="search the URL web link through google search"
     ),
     Tool(
         name = "Web Summary",
@@ -33,8 +33,13 @@ tools = [
     Tool(
         name = "Web Scrap",
         func=webscrap.webscrap,
-        description="browser one url and return the list of relevant page links"
+        description="scrap one url"
     ),    
+    Tool(
+        name = "find the story question in vector db",
+        func=tago_search_index.query_db,
+        description="find out the answer to question and summarize the answer"
+    ),
     # Tool(
     #     name = "CSV tool",
     #     func=tago_csv.agent.run,

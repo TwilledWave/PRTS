@@ -25,7 +25,6 @@ def link_all(link:str):
     #extract the link
     bs_transformer = BeautifulSoupTransformer()
     docs_transformed = bs_transformer.transform_documents(docs,tags_to_extract=["a"])
-    
     return docs_transformed
 
 #extract the relevant links from one url
@@ -37,14 +36,14 @@ def webscrap(link:str):
     
     # Define prompt to extract the links    
     from langchain.prompts import PromptTemplate
-    prompt_template = """Extract the following links of stages from text.
-    Links are alphabets followed by numbers. Output the title and link. 
+    prompt_template = """Extract the following links of from html, in the class of category page member.
+    Links are in the format of words then numbers. Output the title and link. 
 
     An example of the links are.
-    Input: R8-1 (/wiki/R8-1)
+    Input: XX-1 (/wiki/XX-1)
     Output: 
-    title: R8-1
-    link: /wiki/R8-1
+    title: XX-1
+    link: /wiki/XX-1
 
     "{input}"
     Outputs:"""
@@ -55,7 +54,7 @@ def webscrap(link:str):
 
     #define schema to extract the links
     from langchain.chat_models import ChatOpenAI
-    llm = ChatOpenAI(temperature=0.2, model="gpt-3.5-turbo-16k")
+    llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k")
     schema = {
         "properties": {
             "title": {"type": "string"},
@@ -81,4 +80,5 @@ def webscrap(link:str):
     return res
 
 #link = "https://arknights.fandom.com/wiki/Episode_08"
+#link = "https://arknights.fandom.com/wiki/Maria_Nearl_(event)"
 #print(webscrap(link))
