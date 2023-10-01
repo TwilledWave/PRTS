@@ -19,10 +19,15 @@ os.environ['GOOGLE_CSE_ID'] = config['GOOGLE']['GOOGLE_CSE_ID']
 
 search = GoogleSearchAPIWrapper()
 
+#Search Google for recent results
+def top_results(query):
+    #return the link of the google search
+    return search.results(query, 1)[0]['link']
+
 tool = Tool(
     name="Google Search",
-    description="Search Google for recent results.",
-    func=search.run,
+    description="Search Google. return the first URL link.",
+    func=top_results,
 )
 
 llm = ChatOpenAI(temperature=0.0, model_name = 'gpt-3.5-turbo')

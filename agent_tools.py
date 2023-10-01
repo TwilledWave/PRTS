@@ -18,12 +18,13 @@ tools = [
     #     func=tago_reminder_reader.agent_chain.run,
     #     description="useful for when you read a reminder."
     # ),
-    # Tool(
-    #     name = "Search",
-    #     #func=tago_search_index.agent.run,
-    #     func=tago_googlesearch.agent.run,
-    #     description="useful for when you need to search for info"
-    # ),
+    Tool(
+        name = "Search",
+        #func=tago_search_index.agent.run,
+        #func=tago_googlesearch.agent.run,
+        func=tago_googlesearch.top_results,
+        description="find the URL web link through google search"
+    ),
     Tool(
         name = "Web Summary",
         func=websummary.run,
