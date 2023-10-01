@@ -23,8 +23,8 @@ def web_loader(link:str):
     loader = WebBaseLoader(link)
     docs = loader.load()
     #splitter
-    #text_splitter = RecursiveCharacterTextSplitter(chunk_size = 7000, chunk_overlap = 500)
-    #docs = text_splitter.split_documents(docs)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 25000, chunk_overlap = 500)
+    docs = text_splitter.split_documents(docs)
     return docs
 
 
@@ -32,8 +32,58 @@ def web_loader(link:str):
 from langchain.chains.llm import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.chains.combine_documents.stuff import StuffDocumentsChain
+from langchain.chains.mapreduce import MapReduceChain
+from langchain.chains import ReduceDocumentsChain, MapReduceDocumentsChain
 #summary the story dialogue from main page content of the URL
 def story_summary(docs):
+    #input: docs of the web page
+    # Define LLM chain
+    llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-16k")
+    # Map
+    map_template = """The following is a set of documents
+        {docs}
+        Write a detailed summary of the story in each. 
+        Helpful Answer:"""
+    map_prompt = PromptTemplate.from_template(map_template)
+    map_chain = LLMChain(llm=llm, prompt=map_prompt)
+    
+    # Reduce
+    reduce_template = """The following is set of summaries:
+        {doc_summaries}
+        Take these and combine into a detailed summary of the story. List each section of the story seperately.
+        Helpful Answer:"""
+    reduce_prompt = PromptTemplate.from_template(reduce_template)
+    reduce_chain = LLMChain(llm=llm, prompt=reduce_prompt)
+    # Takes a list of documents, combines them into a single string, and passes this to an LLMChain
+    combine_documents_chain = StuffDocumentsChain(
+        llm_chain=reduce_chain, document_variable_name="doc_summaries"
+    )
+    # Combines and iteravely reduces the mapped documents
+    reduce_documents_chain = ReduceDocumentsChain(
+        # This is final chain that is called.
+        combine_documents_chain=combine_documents_chain,
+        # If documents exceed context for `StuffDocumentsChain`
+        collapse_documents_chain=combine_documents_chain,
+        # The maximum number of tokens to group documents into.
+        token_max=6000,
+    )
+
+    # Combining documents by mapping a chain over them, then combining results
+    map_reduce_chain = MapReduceDocumentsChain(
+        # Map chain
+        llm_chain=map_chain,
+        # Reduce chain
+        reduce_documents_chain=reduce_documents_chain,
+        # The variable name in the llm_chain to put the documents in
+        document_variable_name="docs",
+        # Return the results of the map steps in the output
+        return_intermediate_steps=False,
+    )
+    #return the summary from the map and reduce procedure
+    return map_reduce_chain.run(docs)
+
+#use one 1 chain to summary the story dialogue from main page content of the URL
+def story_summary_stuff(docs):
     #input: docs of the web page
 
     # Define prompt
@@ -52,7 +102,6 @@ def story_summary(docs):
     )
     
     return stuff_chain.run(docs)
-
 
 #summary the metadata of the page
 def meta_summary(docs):
@@ -109,7 +158,10 @@ def websummary(link:str):
     #load
     docs = web_loader(link)
     #summarize the story
-    story = story_summary(docs)
+    if len(docs) > 2:
+        story = story_summary(docs);
+    else:
+        story = story_summary_stuff(docs);
     #summarize the meta data
     meta = meta_summary(docs)
     meta['source'] = link
@@ -136,6 +188,3 @@ def run(link:str):
         
 #link = "https://arknights.fandom.com/wiki/R8-1/Story"
 #print(websummary(link))
-               
-#link = "['arknights.fandom.com//wiki/R8-1/Story', 'arknights.fandom.com//wiki/R8-2/Story']"
-#print(run(link))
