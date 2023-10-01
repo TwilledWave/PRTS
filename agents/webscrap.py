@@ -40,7 +40,7 @@ def webscrap(link:str):
     prompt_template = """Extract the following links of stages from text.
     Links are alphabets followed by numbers. Output the title and link. 
 
-    Examples of the links are.
+    An example of the links are.
     Input: R8-1 (/wiki/R8-1)
     Output: 
     title: R8-1
@@ -68,15 +68,13 @@ def webscrap(link:str):
     from langchain.chains import create_extraction_chain
     extracted_content = create_extraction_chain(schema=schema, prompt=prompt, llm=llm).run(text)
 
-    #extract the first link as the main link
-    import re
-    #main_link = re.search("[\w.]+",text)[0]
-    main_link = "arknights.fandom.com"
-    
+    from urllib.parse import urlparse
+    hostname = urlparse(link).hostname
+
     #add the main link
     res = []
     for k in range(len(extracted_content)):
-        extracted_content[k]['link'] = main_link + '/' + extracted_content[k]['link'] + '/' + suffix
+        extracted_content[k]['link'] = hostname + '/' + extracted_content[k]['link'] + '/' + suffix
         res.append(extracted_content[k]['link'])
         
     #return extracted_content

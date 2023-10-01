@@ -4,6 +4,7 @@ from langchain.tools import Tool
 from langchain.utilities import GoogleSearchAPIWrapper
 from langchain.chat_models import ChatOpenAI
 
+
 import configparser, os
 config = configparser.ConfigParser()
 config.read('./keys.ini')
@@ -22,7 +23,7 @@ def web_loader(link:str):
     loader = WebBaseLoader(link)
     docs = loader.load()
     #splitter
-    #text_splitter = RecursiveCharacterTextSplitter(chunk_size = 3000, chunk_overlap = 500)
+    #text_splitter = RecursiveCharacterTextSplitter(chunk_size = 7000, chunk_overlap = 500)
     #docs = text_splitter.split_documents(docs)
     return docs
 
@@ -49,7 +50,7 @@ def story_summary(docs):
     stuff_chain = StuffDocumentsChain(
         llm_chain=llm_chain, document_variable_name="text"
     )
-
+    
     return stuff_chain.run(docs)
 
 
@@ -91,6 +92,19 @@ def meta_summary(docs):
 #summarize a web page then write to vector db
 def websummary(link:str):
     #input: link of the web page to summarize
+
+    #load vector db
+    from langchain.embeddings import OpenAIEmbeddings
+    from langchain.vectorstores import Chroma
+    db = Chroma(persist_directory="./cache", embedding_function=OpenAIEmbeddings())
+    #get the db existing id set
+    tmp = db.get()['ids']
+    this_db_set = set([x.split("_")[0] for x in tmp])
+    #check whether the hash link is in the db already
+    import hashlib
+    this_id = str(int(hashlib.sha1(link.encode("utf-8")).hexdigest(), 16) % (10 ** 8))
+    if (this_id in this_db_set):
+        return(link+" link already in the db, skip");
     
     #load
     docs = web_loader(link)
@@ -100,14 +114,9 @@ def websummary(link:str):
     meta = meta_summary(docs)
     meta['source'] = link
     
+    #write to vector db
     from langchain.docstore.document import Document
     output_doc = Document(page_content=story, metadata=meta);
-    
-    #load vector db and write
-    from langchain.embeddings import OpenAIEmbeddings
-    from langchain.vectorstores import Chroma
-    db = Chroma(persist_directory="./cache", embedding_function=OpenAIEmbeddings())
-    this_id = str(abs(hash(link)) % (10 ** 8))
     db.add_documents([output_doc], ids = [this_id])
     
     return(output_doc)
@@ -119,10 +128,10 @@ def run(link:str):
     import re, time
     link_list = re.findall('[\w/.\:\#\-]+',link)
     for l in link_list:
-        time.sleep(15)
         if "https:" not in l:
             l = "https://"+l;
         print(websummary(l));
+        time.sleep(15)
     return("summarize run successful")
         
 #link = "https://arknights.fandom.com/wiki/R8-1/Story"
