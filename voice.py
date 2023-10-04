@@ -64,7 +64,7 @@ def create_tts_fn(net_g_ms, speaker_id):
             elif language == 1:
                 text = f"[JA]{text}[JA]"
             else:
-                text = f"{text}"
+                text = f"[EN]{text}[EN]"
         stn_tst, clean_text = get_text(text, hps_ms, is_symbol)
         with no_grad():
             x_tst = stn_tst.unsqueeze(0).to(device)
@@ -83,7 +83,7 @@ def create_to_symbol_fn(hps):
         elif temp_lang == 1:
             clean_text = f'[JA]{input_text}[JA]'
         else:
-            clean_text = input_text
+            clean_text = f'[EN]{input_text}[EN]'
         return _clean_text(clean_text, hps.data.text_cleaners) if is_symbol_input else ''
 
     return to_symbol_fn
@@ -144,6 +144,34 @@ def tts_fn_jp(input_text):
     symbol_input = False
     limitation = False
     return tts_fn_ayaka(input_text, lang,  ns, nsw, ls, symbol_input)
+
+
+#load 3rd EN voice model
+info = models_info['en']
+i = 'en'
+
+net_g_ms = SynthesizerTrn(
+            len(hps_ms.symbols),
+            hps_ms.data.filter_length // 2 + 1,
+            hps_ms.train.segment_size // hps_ms.data.hop_length,
+            n_speakers=hps_ms.data.n_speakers if info['type'] == "multi" else 0,
+            **hps_ms.model)
+
+utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms, None)
+device = torch.device('cuda') 
+_ = net_g_ms.eval().to(device)
+
+sid = info['sid']
+tts_fn_raiden = create_tts_fn(net_g_ms, sid)
+
+def tts_fn_en(input_text):
+    lang = 2
+    ns = 0.6
+    nsw = 0.668
+    ls = 1.0
+    symbol_input = False
+    limitation = False
+    return tts_fn_raiden(input_text, lang,  ns, nsw, ls, symbol_input)
 
 #o3, o4 = tts_fn_ayaka("はい,ご主人様")
 #write('yes.wav',o4[0],o4[1])
