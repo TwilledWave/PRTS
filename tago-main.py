@@ -7,6 +7,10 @@ from langchain.utilities import GoogleSearchAPIWrapper
 
 import time
 import speech_recognition as sr
+from voice import *
+import threading
+import logging
+logging.disable(logging.CRITICAL)
 
 import ctypes
 from ctypes import *
@@ -43,7 +47,9 @@ tools += [
     )
 ]
 
-prefix = """You are Tago, an AI assistant. You will first answer questions from your chat history. Only if no answers are available from your chat history, you will select a tool and use the selected tool to answer the question. """
+prefix = """You are Tago, a chat bot and AI assistant. You will first answer questions from your chat history. Only if no answers are available from your chat history, you will select a tool and use the selected tool to answer the question. 
+Translate the answers to chinese! Only output Chinese.
+"""
 suffix = """Begin!"
 
 {chat_history}
@@ -115,5 +121,9 @@ for _ in range(10000):
         if audio_out == 'audio':
             keyboard = False
         else:
-            print(agent_response(audio_out))
+            response = agent_response(audio_out)
+            print(response)
+            o1, o2 = tts_fn_cn(response)
+            write('chat.wav',o2[0],o2[1])
+            dll.PlaySoundW('chat.wav',None,SND_FILENAME)
     time.sleep(0.1)  # we're still listening even though the main thread is doing other things

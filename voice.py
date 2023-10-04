@@ -42,11 +42,11 @@ symbol_input = True
 limitation = False
 
 def get_text(text, hps, is_symbol):
-    text_norm, clean_text = text_to_sequence(text, hps.symbols, [] if is_symbol else hps.data.text_cleaners)
+    text_norm = text_to_sequence(text, hps.symbols, [] if is_symbol else hps.data.text_cleaners)
     if hps.data.add_blank:
         text_norm = commons.intersperse(text_norm, 0)
     text_norm = LongTensor(text_norm)
-    return text_norm, clean_text
+    return text_norm
 
 def create_tts_fn(net_g_ms, speaker_id):
     def tts_fn(text, language, noise_scale, noise_scale_w, length_scale, is_symbol):
@@ -65,7 +65,7 @@ def create_tts_fn(net_g_ms, speaker_id):
                 text = f"[JA]{text}[JA]"
             else:
                 text = f"[EN]{text}[EN]"
-        stn_tst, clean_text = get_text(text, hps_ms, is_symbol)
+        stn_tst = get_text(text, hps_ms, is_symbol)
         with no_grad():
             x_tst = stn_tst.unsqueeze(0).to(device)
             x_tst_lengths = LongTensor([stn_tst.size(0)]).to(device)
@@ -145,8 +145,12 @@ def tts_fn_jp(input_text):
     limitation = False
     return tts_fn_ayaka(input_text, lang,  ns, nsw, ls, symbol_input)
 
+#o3, o4 = tts_fn_jp("はい,ご主人様")
+#write('chat.wav',o4[0],o4[1])
 
 #load 3rd EN voice model
+hps_ms = utils.get_hparams_from_file(r'pretrained_models/trilingual.json')
+
 info = models_info['en']
 i = 'en'
 
@@ -173,8 +177,8 @@ def tts_fn_en(input_text):
     limitation = False
     return tts_fn_raiden(input_text, lang,  ns, nsw, ls, symbol_input)
 
-#o3, o4 = tts_fn_ayaka("はい,ご主人様")
-#write('yes.wav',o4[0],o4[1])
+#o3, o4 = tts_fn_en("yes, master")
+#write('chat.wav',o4[0],o4[1])
 
 #EN voice
 
