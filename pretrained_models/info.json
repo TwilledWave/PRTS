@@ -20,5 +20,17 @@
 		"example": "今天晚上吃啥好呢",
 		"language": "Chinese",
 		"type": "multi"
+    },
+	"en": {
+		"enable": true,
+		"name_en": "en",
+		"name_zh": "英文",
+        "title": " ",
+        "cover": " ",
+		"sid": 107,
+		"example": "how are you doing?",
+		"language": "English",
+		"type": "multi"
     }
+	
 }
