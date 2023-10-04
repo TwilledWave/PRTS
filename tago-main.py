@@ -123,7 +123,10 @@ for _ in range(10000):
         else:
             response = agent_response(audio_out)
             print(response)
-            o1, o2 = tts_fn_cn(response)
+            o1, o2 = tts_fn(response, 'en')
             write('chat.wav',o2[0],o2[1])
-            dll.PlaySoundW('chat.wav',None,SND_FILENAME)
+            def play():
+                dll.PlaySoundW('chat.wav',None,SND_FILENAME)
+            thread = threading.Thread(target=play)
+            thread.start()
     time.sleep(0.1)  # we're still listening even though the main thread is doing other things

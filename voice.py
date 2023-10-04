@@ -177,7 +177,21 @@ def tts_fn_en(input_text):
     limitation = False
     return tts_fn_raiden(input_text, lang,  ns, nsw, ls, symbol_input)
 
-#o3, o4 = tts_fn_en("yes, master")
+def tts_fn(input_text, lang = 'en'):
+    ns = 0.6
+    nsw = 0.668
+    ls = 1.0
+    symbol_input = False
+    limitation = False    
+    if lang == 'en':
+        return tts_fn_raiden(input_text, 2,  ns, nsw, ls, symbol_input)
+    elif lang == 'jp':
+        return tts_fn_ayaka(input_text, 1,  ns, nsw, ls, symbol_input)
+    elif lang == 'cn':
+        ls = 1.3
+        return tts_fn_eula(input_text, 0,  ns, nsw, ls, symbol_input)
+
+#o3, o4 = tts_fn("yes, master")
 #write('chat.wav',o4[0],o4[1])
 
 #EN voice
