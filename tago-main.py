@@ -48,7 +48,6 @@ tools += [
 ]
 
 prefix = """You are Tago, a chat bot and AI assistant. You will first answer questions from your chat history. Only if no answers are available from your chat history, you will select a tool and use the selected tool to answer the question. 
-Translate the answers to chinese! Only output Chinese.
 """
 suffix = """Begin!"
 
@@ -63,7 +62,7 @@ prompt = ZeroShotAgent.create_prompt(
     input_variables=["input", "chat_history", "agent_scratchpad"]
 )
 
-llm_chain = LLMChain(llm=OpenAI(temperature=0), prompt=prompt)
+llm_chain = LLMChain(llm=OpenAI(temperature=1), prompt=prompt)
 agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
 agent_chain = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory)
 

@@ -48,7 +48,7 @@ def get_text(text, hps, is_symbol):
     text_norm = LongTensor(text_norm)
     return text_norm
 
-def create_tts_fn(net_g_ms, speaker_id):
+def create_tts_fn(net_g_ms, speaker_id, hps_ms):
     def tts_fn(text, language, noise_scale, noise_scale_w, length_scale, is_symbol):
         text = text.replace('\n', ' ').replace('\r', '').replace(" ", "")
         if limitation:
@@ -87,6 +87,7 @@ def create_to_symbol_fn(hps):
         return _clean_text(clean_text, hps.data.text_cleaners) if is_symbol_input else ''
 
     return to_symbol_fn
+
 def change_lang(language):
     if language == 0:
         return 0.6, 0.668, 1.2
@@ -95,7 +96,7 @@ def change_lang(language):
     else:
         return 0.6, 0.668, 1
 
-tts_fn_eula = create_tts_fn(net_g_ms, sid)
+tts_fn_eula = create_tts_fn(net_g_ms, sid, hps_ms)
 #o1, o2 = tts_fn(input_text, lang,  ns, nsw, ls, symbol_input)
 #write('test.wav',o2[0],o2[1])
 
@@ -134,7 +135,7 @@ device = torch.device('cuda')
 _ = net_g_ms.eval().to(device)
 
 sid = info['sid']
-tts_fn_ayaka = create_tts_fn(net_g_ms, sid)
+tts_fn_ayaka = create_tts_fn(net_g_ms, sid, hps_ms)
 
 def tts_fn_jp(input_text):
     lang = 1
@@ -149,24 +150,24 @@ def tts_fn_jp(input_text):
 #write('chat.wav',o4[0],o4[1])
 
 #load 3rd EN voice model
-hps_ms = utils.get_hparams_from_file(r'pretrained_models/trilingual.json')
+hps_ms2 = utils.get_hparams_from_file(r'pretrained_models/trilingual.json')
 
 info = models_info['en']
 i = 'en'
 
-net_g_ms = SynthesizerTrn(
-            len(hps_ms.symbols),
-            hps_ms.data.filter_length // 2 + 1,
-            hps_ms.train.segment_size // hps_ms.data.hop_length,
-            n_speakers=hps_ms.data.n_speakers if info['type'] == "multi" else 0,
-            **hps_ms.model)
+net_g_ms2 = SynthesizerTrn(
+            len(hps_ms2.symbols),
+            hps_ms2.data.filter_length // 2 + 1,
+            hps_ms2.train.segment_size // hps_ms.data.hop_length,
+            n_speakers=hps_ms2.data.n_speakers if info['type'] == "multi" else 0,
+            **hps_ms2.model)
 
-utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms, None)
+utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms2, None)
 device = torch.device('cuda') 
-_ = net_g_ms.eval().to(device)
+_ = net_g_ms2.eval().to(device)
 
 sid = info['sid']
-tts_fn_raiden = create_tts_fn(net_g_ms, sid)
+tts_fn_raiden = create_tts_fn(net_g_ms2, sid, hps_ms2)
 
 def tts_fn_en(input_text):
     lang = 2
@@ -184,15 +185,15 @@ def tts_fn(input_text, lang = 'en'):
     symbol_input = False
     limitation = False    
     if lang == 'en':
+        ls = 1.25
+        ns = 0.667
+        nsw = 0.8
         return tts_fn_raiden(input_text, 2,  ns, nsw, ls, symbol_input)
     elif lang == 'jp':
         return tts_fn_ayaka(input_text, 1,  ns, nsw, ls, symbol_input)
     elif lang == 'cn':
-        ls = 1.3
+        ls = 1.4
         return tts_fn_eula(input_text, 0,  ns, nsw, ls, symbol_input)
-
-#o3, o4 = tts_fn("yes, master")
-#write('chat.wav',o4[0],o4[1])
 
 #EN voice
 
