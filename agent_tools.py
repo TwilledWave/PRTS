@@ -25,16 +25,16 @@ tools = [
         func=tago_googlesearch.top_results,
         description="search the URL web link through google search"
     ),
-    Tool(
-        name = "Web Summary",
-        func=websummary.run,
-        description="summarize webpage by links"
-    ),
-    Tool(
-        name = "Web Scrap",
-        func=webscrap.webscrap,
-        description="scrap one url"
-    ),    
+    # Tool(
+    #     name = "Web Summary",
+    #     func=websummary.run,
+    #     description="summarize webpage by links"
+    # ),
+    # Tool(
+    #     name = "Web Scrap",
+    #     func=webscrap.webscrap,
+    #     description="scrap one url"
+    # ),    
     Tool(
         name = "find the story question in vector db",
         func=tago_search_index.query_db,

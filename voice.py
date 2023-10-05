@@ -10,36 +10,6 @@ from text import text_to_sequence, _clean_text
 from torch import no_grad, LongTensor
 from scipy.io.wavfile import write
 
-hps_ms = utils.get_hparams_from_file(r'pretrained_models/config.json')
-
-with open("pretrained_models/info.json", "r", encoding="utf-8") as f:
-    models_info = json.load(f)
-
-#load voice model
-info = models_info['cn']
-i = 'cn'
-
-net_g_ms = SynthesizerTrn(
-            len(hps_ms.symbols),
-            hps_ms.data.filter_length // 2 + 1,
-            hps_ms.train.segment_size // hps_ms.data.hop_length,
-            n_speakers=hps_ms.data.n_speakers if info['type'] == "multi" else 0,
-            **hps_ms.model)
-
-utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms, None)
-
-device = torch.device('cuda') 
-
-_ = net_g_ms.eval().to(device)
-
-sid = info['sid']
-input_text = "うふふ……"
-lang = 0
-ns = 0.6
-nsw = 0.668
-ls = 1.2
-symbol_input = True
-limitation = False
 
 def get_text(text, hps, is_symbol):
     text_norm = text_to_sequence(text, hps.symbols, [] if is_symbol else hps.data.text_cleaners)
@@ -51,6 +21,7 @@ def get_text(text, hps, is_symbol):
 def create_tts_fn(net_g_ms, speaker_id, hps_ms):
     def tts_fn(text, language, noise_scale, noise_scale_w, length_scale, is_symbol):
         text = text.replace('\n', ' ').replace('\r', '').replace(" ", "")
+        limitation = False;
         if limitation:
             text_len = len(re.sub("\[([A-Z]{2})\]", "", text))
             max_len = 100
@@ -96,19 +67,6 @@ def change_lang(language):
     else:
         return 0.6, 0.668, 1
 
-#tts_fn_eula = create_tts_fn(net_g_ms, sid, hps_ms)
-#o1, o2 = tts_fn(input_text, lang,  ns, nsw, ls, symbol_input)
-#write('test.wav',o2[0],o2[1])
-
-def tts_fn_cn(input_text):
-    lang = 0
-    ns = 0.6
-    nsw = 0.668
-    ls = 1.3
-    symbol_input = False
-    limitation = False
-    return tts_fn_eula(input_text, lang,  ns, nsw, ls, symbol_input)
-
 import ctypes
 from ctypes import *
 from ctypes import wintypes as w
@@ -118,39 +76,84 @@ dll.PlaySoundW.restype = w.BOOL
 SND_FILENAME = 0x20000
 #dll.PlaySoundW('test.wav',None,SND_FILENAME)
 
+with open("pretrained_models/info.json", "r", encoding="utf-8") as f:
+     models_info = json.load(f)
 
-#load 2nd voice model
-info = models_info['jp']
-i = 'jp'
 
-net_g_ms = SynthesizerTrn(
-            len(hps_ms.symbols),
-            hps_ms.data.filter_length // 2 + 1,
-            hps_ms.train.segment_size // hps_ms.data.hop_length,
-            n_speakers=hps_ms.data.n_speakers if info['type'] == "multi" else 0,
-            **hps_ms.model)
+# hps_ms = utils.get_hparams_from_file(r'pretrained_models/config.json')
 
-utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms, None)
-device = torch.device('cuda') 
-_ = net_g_ms.eval().to(device)
+# #load voice model
+# info = models_info['cn']
+# i = 'cn'
 
-sid = info['sid']
-#tts_fn_ayaka = create_tts_fn(net_g_ms, sid, hps_ms)
+# net_g_ms = SynthesizerTrn(
+#             len(hps_ms.symbols),
+#             hps_ms.data.filter_length // 2 + 1,
+#             hps_ms.train.segment_size // hps_ms.data.hop_length,
+#             n_speakers=hps_ms.data.n_speakers if info['type'] == "multi" else 0,
+#             **hps_ms.model)
 
-def tts_fn_jp(input_text):
-    lang = 1
-    ns = 0.6
-    nsw = 0.668
-    ls = 1.0
-    symbol_input = False
-    limitation = False
-    return tts_fn_ayaka(input_text, lang,  ns, nsw, ls, symbol_input)
+# utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms, None)
+
+# device = torch.device('cuda') 
+
+# _ = net_g_ms.eval().to(device)
+
+# sid = info['sid']
+# input_text = "うふふ……"
+# lang = 0
+# ns = 0.6
+# nsw = 0.668
+# ls = 1.2
+# symbol_input = True
+# limitation = False
+
+# tts_fn_eula = create_tts_fn(net_g_ms, sid, hps_ms)
+# #o1, o2 = tts_fn(input_text, lang,  ns, nsw, ls, symbol_input)
+# #write('test.wav',o2[0],o2[1])
+
+# def tts_fn_cn(input_text):
+#     lang = 0
+#     ns = 0.6
+#     nsw = 0.668
+#     ls = 1.3
+#     symbol_input = False
+#     limitation = False
+#     return tts_fn_eula(input_text, lang,  ns, nsw, ls, symbol_input)
+
+
+# #load 2nd voice model
+# info = models_info['jp']
+# i = 'jp'
+
+# net_g_ms = SynthesizerTrn(
+#             len(hps_ms.symbols),
+#             hps_ms.data.filter_length // 2 + 1,
+#             hps_ms.train.segment_size // hps_ms.data.hop_length,
+#             n_speakers=hps_ms.data.n_speakers if info['type'] == "multi" else 0,
+#             **hps_ms.model)
+
+# utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms, None)
+# device = torch.device('cuda') 
+# _ = net_g_ms.eval().to(device)
+
+# sid = info['sid']
+# tts_fn_ayaka = create_tts_fn(net_g_ms, sid, hps_ms)
+
+# def tts_fn_jp(input_text):
+#     lang = 1
+#     ns = 0.6
+#     nsw = 0.668
+#     ls = 1.0
+#     symbol_input = False
+#     limitation = False
+#     return tts_fn_ayaka(input_text, lang,  ns, nsw, ls, symbol_input)
 
 #o3, o4 = tts_fn_jp("はい,ご主人様")
 #write('chat.wav',o4[0],o4[1])
 
 #load 3rd EN voice model
-hps_ms2 = utils.get_hparams_from_file(r'pretrained_models/trilingual.json')
+hps_ms2 = utils.get_hparams_from_file(r'pretrained_models/trilingual/trilingual.json')
 
 info = models_info['en']
 i = 'en'
@@ -158,11 +161,11 @@ i = 'en'
 net_g_ms2 = SynthesizerTrn(
             len(hps_ms2.symbols),
             hps_ms2.data.filter_length // 2 + 1,
-            hps_ms2.train.segment_size // hps_ms.data.hop_length,
+            hps_ms2.train.segment_size // hps_ms2.data.hop_length,
             n_speakers=hps_ms2.data.n_speakers if info['type'] == "multi" else 0,
             **hps_ms2.model)
 
-utils.load_checkpoint(f'pretrained_models/{i}/{i}.pth', net_g_ms2, None)
+utils.load_checkpoint(f'pretrained_models/trilingual/trilingual.pth', net_g_ms2, None)
 device = torch.device('cuda') 
 _ = net_g_ms2.eval().to(device)
 
@@ -197,19 +200,25 @@ def tts_fn(input_text, lang = 'en'):
         #return tts_fn_eula(input_text, 0,  ns, nsw, ls, symbol_input)
         return tts_fn_raiden(input_text, 0,  ns, nsw, ls, symbol_input)
 
+o3, o4 = tts_fn("good morning command",'en')
+write('chat.wav',o4[0],o4[1])
+        
 #EN voice
 
-#from TTS.api import TTS
-##disable logging
-#import logging
-#logging.disable(logging.CRITICAL)
+# from TTS.api import TTS
+# #disable logging
+# import logging
+# logging.disable(logging.CRITICAL)
 
-#text_trap = io.StringIO()
-#sys.stdout = text_trap
+# text_trap = io.StringIO()
+# sys.stdout = text_trap
 
-# List available 🐸TTS models and choose the first one
-#model_name = TTS.list_models()[0]
-# Init TTS
-#tts = TTS("tts_models/en/ljspeech/tacotron2-DDC_ph", gpu = True)
+# tts = TTS("tts_models/en/ljspeech/tacotron2-DDC_ph", gpu = True)
 
-#sys.stdout = sys.__stdout__
+# sys.stdout = sys.__stdout__
+
+# response = "hello master"
+# text_trap = io.StringIO()
+# sys.stdout = text_trap
+# tts.tts_to_file(text=response, file_path="chat.wav")
+# sys.stdout = sys.__stdout__

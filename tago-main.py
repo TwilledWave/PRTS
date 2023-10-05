@@ -6,8 +6,8 @@ from langchain import OpenAI, LLMChain
 from langchain.utilities import GoogleSearchAPIWrapper
 
 import time
-import speech_recognition as sr
-from voice import *
+from voice2 import *
+from scipy.io.wavfile import write
 import threading
 import logging
 logging.disable(logging.CRITICAL)
@@ -102,18 +102,20 @@ def callback(recognizer, audio):
         print("Could not request results from Speech Recognition service; {0}".format(e))
     #except Exception as e:
     #    print("Other except")
-        
-r = sr.Recognizer()
-m = sr.Microphone()
-with m as source:
-    r.adjust_for_ambient_noise(source)  # we only need to calibrate once, before we start listening
 
-# start listening in the background (note that we don't have to do this inside a `with` statement)
-stop_listening = r.listen_in_background(m, callback, phrase_time_limit = 2)
-# `stop_listening` is now a function that, when called, stops background listening
+if keyboard == False:    
+    import speech_recognition as sr    
+    r = sr.Recognizer()
+    m = sr.Microphone()
+    with m as source:
+        r.adjust_for_ambient_noise(source)  # we only need to calibrate once, before we start listening
+    # start listening in the background (note that we don't have to do this inside a `with` statement)
+    stop_listening = r.listen_in_background(m, callback, phrase_time_limit = 2)
+    # `stop_listening` is now a function that, when called, stops background listening
+
 
 # do some unrelated computations for 5 seconds
-for _ in range(10000): 
+for k in range(10000): 
     if keyboard == True:
         print('You: ... ')            
         audio_out = input();

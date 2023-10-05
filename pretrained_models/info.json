@@ -1,4 +1,18 @@
 {
+	"Trilingual": {
+		"enable": true,
+		"name_en": "Trilingual",
+		"name_zh": "多语言",
+        "title": "Trilingual",
+        "cover": " ",
+		"sid": 107,
+		"example": "how are you doing?",
+		"language": ["Chinese", "Japanese", "English", "Mix"],
+		"type": "multi",
+		"description": "https://huggingface.co/spaces/Plachta/VITS-Umamusume-voice-synthesizer/tree/main",
+		"model_path": "./pretrained_models/trilingual/trilingual.pth", 
+		"config_path": "./pretrained_models/trilingual/trilingual.json"
+    },
 	"jp": {
 		"enable": true,
 		"name_en": "jp",
