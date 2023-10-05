@@ -96,7 +96,7 @@ def change_lang(language):
     else:
         return 0.6, 0.668, 1
 
-tts_fn_eula = create_tts_fn(net_g_ms, sid, hps_ms)
+#tts_fn_eula = create_tts_fn(net_g_ms, sid, hps_ms)
 #o1, o2 = tts_fn(input_text, lang,  ns, nsw, ls, symbol_input)
 #write('test.wav',o2[0],o2[1])
 
@@ -135,7 +135,7 @@ device = torch.device('cuda')
 _ = net_g_ms.eval().to(device)
 
 sid = info['sid']
-tts_fn_ayaka = create_tts_fn(net_g_ms, sid, hps_ms)
+#tts_fn_ayaka = create_tts_fn(net_g_ms, sid, hps_ms)
 
 def tts_fn_jp(input_text):
     lang = 1
@@ -190,10 +190,12 @@ def tts_fn(input_text, lang = 'en'):
         nsw = 0.8
         return tts_fn_raiden(input_text, 2,  ns, nsw, ls, symbol_input)
     elif lang == 'jp':
-        return tts_fn_ayaka(input_text, 1,  ns, nsw, ls, symbol_input)
+        #return tts_fn_ayaka(input_text, 1,  ns, nsw, ls, symbol_input)
+        return tts_fn_raiden(input_text, 1,  ns, nsw, ls, symbol_input)
     elif lang == 'cn':
         ls = 1.4
-        return tts_fn_eula(input_text, 0,  ns, nsw, ls, symbol_input)
+        #return tts_fn_eula(input_text, 0,  ns, nsw, ls, symbol_input)
+        return tts_fn_raiden(input_text, 0,  ns, nsw, ls, symbol_input)
 
 #EN voice
 
