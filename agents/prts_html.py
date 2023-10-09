@@ -4,7 +4,7 @@ from json2html import *
 #output chapter content to html
 def run(query:str):
 
-    client = chromadb.PersistentClient(path="./scappy/arkdb")
+    client = chromadb.PersistentClient(path="./db/arkdb")
 
     #print ("find db collection:" + client.list_collections())
 
@@ -16,7 +16,7 @@ def run(query:str):
             tmp.append(data["metadatas"][k]);
             tmp[-1]["summary"] = data["documents"][k]
 
-    with open('./output.html', 'w') as f:
+    with open('./output.html', 'w', encoding="utf-8") as f:
         f.write(json2html.convert(json = tmp))
     
-    return("success: write db to db.html")
+    return("success: write query to output.html")

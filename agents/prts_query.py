@@ -1,15 +1,16 @@
-from langchain.chains.llm import LLMChain
-from langchain.prompts import PromptTemplate
-from langchain.chains.combine_documents.stuff import StuffDocumentsChain
 
 #query using the stuff summarization chain
 def run(query:str):
     #input: the query question
     #output: summary based on the query
-
+    from langchain.chains.llm import LLMChain
+    from langchain.prompts import PromptTemplate
+    from langchain.chains.combine_documents.stuff import StuffDocumentsChain
     from langchain.embeddings import OpenAIEmbeddings
     from langchain.vectorstores import Chroma
-    db = Chroma(persist_directory="./scappy/arkdb", embedding_function=OpenAIEmbeddings())
+    from langchain.chat_models import ChatOpenAI
+    
+    db = Chroma(persist_directory="./db/arkdb", embedding_function=OpenAIEmbeddings())
     res = db.similarity_search(query, k = 8)
     
     # Define prompt

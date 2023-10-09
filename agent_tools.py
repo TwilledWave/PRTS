@@ -14,8 +14,8 @@ tools = [
         description="output the vector db page content of arknigths chapters to html"
     ),
     Tool(
-        name = "write a fan fiction",
+        name = "fan_fiction",
         func=prts_fiction.run,
-        description="write fan fictions based on the instruction"
+        description="write a fan fiction"
     ),
 ]
