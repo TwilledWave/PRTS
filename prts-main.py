@@ -6,48 +6,31 @@ from langchain import OpenAI, LLMChain
 from langchain.utilities import GoogleSearchAPIWrapper
 
 import time
-from voice2 import *
-from scipy.io.wavfile import write
+# from voice2 import *
+# from scipy.io.wavfile import write
 import threading
 import logging
 logging.disable(logging.CRITICAL)
 
-import ctypes
-from ctypes import *
-from ctypes import wintypes as w
-dll = WinDLL('winmm')
-dll.PlaySoundW.argtypes = w.LPCWSTR,w.HMODULE,w.DWORD
-dll.PlaySoundW.restype = w.BOOL
-SND_FILENAME = 0x20000
+# import ctypes
+# from ctypes import *
+# from ctypes import wintypes as w
+# dll = WinDLL('winmm')
+# dll.PlaySoundW.argtypes = w.LPCWSTR,w.HMODULE,w.DWORD
+# dll.PlaySoundW.restype = w.BOOL
+# SND_FILENAME = 0x20000
 
 import configparser, os
 config = configparser.ConfigParser()
 config.read('./keys.ini')
 openai_api_key = config['OPENAI']['OPENAI_API_KEY']
-os.environ['OPENAI_API_KEY'] = openai_api_key
-os.environ['SERPAPI_API_KEY'] = config['SERPAPI']['SERPAPI_API_KEY']
-os.environ['PINECONE_API_KEY'] = config['PINECONE']['PINECONE_API_KEY']
-os.environ['PINECONE_API_ENV'] = config['PINECONE']['PINECONE_API_ENV']
-os.environ['APIFY_API_TOKEN'] = config['APIFY']['APIFY_API_KEY']
 
 from agent_tools import tools
 
 message_history = RedisChatMessageHistory(url='redis://localhost:6379/0', ttl=600, session_id='buffer')
 memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=message_history)
 
-#add the tool that allows agent to clear her own memory
-def clear_memory():
-    memory.clear();
-
-tools += [
-    Tool(
-        name = "clear memory",
-        func=clear_memory,
-        description="clear chat history and memory"
-    )
-]
-
-prefix = """You are Tago, a chat bot and AI assistant. You will first answer questions from your chat history. Only if no answers are available from your chat history, you will select a tool and use the selected tool to answer the question. 
+prefix = """You are PRTS / 普瑞赛斯, an AI assistant to answer questions about the Arknigths story by querying vector database. 
 """
 suffix = """Begin!"
 
@@ -114,7 +97,6 @@ if keyboard == False:
     # `stop_listening` is now a function that, when called, stops background listening
 
 
-# do some unrelated computations for 5 seconds
 for k in range(10000): 
     if keyboard == True:
         print('You: ... ')            
