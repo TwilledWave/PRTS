@@ -15,6 +15,7 @@ def text_to_sequence(text, symbols, cleaner_names):
   sequence = []
 
   clean_text = _clean_text(text, cleaner_names)
+  print(clean_text)
   for symbol in clean_text:
     if symbol not in _symbol_to_id.keys():
       continue

@@ -141,13 +141,15 @@ models_vc.append((name, description, speakers, create_vc_fn(model, hps, speaker_
 
 tts = models_tts[0][6]
 char = "雷电将军 Raiden Shogun (Genshin Impact)"
-def tts_fn(input_text, lang = 'en'):
+def tts_fn(input_text, lang = ""):
     if lang == 'en':
-        return tts(input_text,char,"English",0.8,False)
+        return tts(input_text,char,"English",0.6,False)
     elif lang == 'jp':
         return tts(input_text,char,"日本語",1,False)
     elif lang == 'cn':
         return tts(input_text,char,"简体中文",1,False)
+    else:
+        return tts(input_text,char,"Mix",0.8,False)
 
 # test case
 # tts = models_tts[0][6]
@@ -156,3 +158,20 @@ def tts_fn(input_text, lang = 'en'):
 # o3, o4 = tts("你好，训练员先生，很高兴见到你。","雷电将军 Raiden Shogun (Genshin Impact)","简体中文",1,False)
 # from scipy.io.wavfile import write
 # write('chat.wav',o4[0],o4[1])
+
+# text = """
+# [ZH]真正的骑士决不屈服于暴力，在这把战锤面前忏悔吧。[ZH]
+# [JA]真の騎士は決して暴力に屈しない。この裁きの鉄槌の前に、おのが行いを悔いるがいい。[JA]
+# [EN]A true knight will not bend to the threat of violence. Now, repent for your sins, in front of my warhammer.[EN]
+# """
+# o3, o4 = tts_fn(text)
+# from scipy.io.wavfile import write
+# write('tmp.wav',o4[0],o4[1])
+# import ctypes
+# from ctypes import *
+# from ctypes import wintypes as w
+# dll = WinDLL('winmm')
+# dll.PlaySoundW.argtypes = w.LPCWSTR,w.HMODULE,w.DWORD
+# dll.PlaySoundW.restype = w.BOOL
+# SND_FILENAME = 0x20000
+# dll.PlaySoundW('tmp.wav',None,SND_FILENAME)

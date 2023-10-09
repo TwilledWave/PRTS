@@ -18,13 +18,13 @@ tools = [
     #     func=tago_reminder_reader.agent_chain.run,
     #     description="useful for when you read a reminder."
     # ),
-    Tool(
-        name = "Search",
-        #func=tago_search_index.agent.run,
-        #func=tago_googlesearch.agent.run,
-        func=tago_googlesearch.top_results,
-        description="search the URL web link through google search"
-    ),
+    # Tool(
+    #     name = "Search",
+    #     #func=tago_search_index.agent.run,
+    #     #func=tago_googlesearch.agent.run,
+    #     func=tago_googlesearch.top_results,
+    #     description="search the URL web link through google search"
+    # ),
     # Tool(
     #     name = "Web Summary",
     #     func=websummary.run,
@@ -38,7 +38,7 @@ tools = [
     Tool(
         name = "find the story question in vector db",
         func=tago_search_index.query_db,
-        description="find out the answer to question and summarize the answer"
+        description="find out the source docs to answer the question"
     ),
     # Tool(
     #     name = "CSV tool",
