@@ -8,7 +8,9 @@ To write fan fictions and answer story questions.
 
 Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 
-How to use:
+Inclue all EN stages.
+
+## How to use:
 
 ### load the vector db in Langchain
 ```
