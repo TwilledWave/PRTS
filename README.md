@@ -1,6 +1,6 @@
 # PRTS
 
-Vector database of Arknights Stories 明日方舟AI剧情库
+Vector database of Arknights Stories 明日方舟剧情库，可加入任何Langchain AI系统
 
 Ready to use in the language models via LangChain & Chroma
 
@@ -8,7 +8,7 @@ To write fan fictions and answer story questions.
 
 Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 
-Inclue all EN stages.
+Inclue all the 375 EN stages.
 
 ## How to use:
 
