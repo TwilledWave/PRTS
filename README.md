@@ -8,7 +8,9 @@ To write fan fictions and answer story questions.
 
 Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 
-Inclue all the 375 EN stages.
+10/14: Add all the CN stages into the db, including lonetrail, chapter 13, etc.
+https://htmlpreview.github.io/?https://github.com/TwilledWave/Tago/blob/main/summary_html/episode13.html
+![alt text](https://github.com/TwilledWave/PRTS/blob/main/example/lonetrailhtml.jpg?raw=true)
 
 ## How to use:
 
@@ -35,9 +37,3 @@ agent_chain.run("write a fan fiction of Nearl passionately kissing Vivana after 
 
 ![alt text](https://github.com/TwilledWave/PRTS/blob/main/example/fanfiction.jpg?raw=true)
 
-### output all the story summary in an episode
-```
-agent_chain("output Near Light")
-```
-Output of the run above:
-https://htmlpreview.github.io/?https://github.com/TwilledWave/Tago/blob/main/example/output.html
