@@ -9,7 +9,7 @@ To write fan fictions and answer story questions.
 Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 
 10/14: Add all the CN stages into the db, including lonetrail, chapter 13, etc.
-https://htmlpreview.github.io/?https://github.com/TwilledWave/Tago/blob/main/summary_html/episode13.html
+https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/episode13.html
 ![alt text](https://github.com/TwilledWave/PRTS/blob/main/example/lonetrailhtml.jpg?raw=true)
 
 ## How to use:
