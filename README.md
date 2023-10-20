@@ -9,8 +9,8 @@ To write fan fictions and answer story questions.
 Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 
 ## Latest update:
-10/20: Allow custom LLM use in the summarization via local api call in the db/websummary_customlm.ipynb
-https://github.com/TwilledWave/PRTS/blob/main/db/websummary_customlm.ipynb
+10/20: Allow custom LLM use in the summarization via local api call in the [websummary_customlm.ipynb](https://github.com/TwilledWave/PRTS/blob/main/db/websummary_customlm.ipynb)
+
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
 ## How to use:
