@@ -8,6 +8,8 @@ To write fan fictions and answer story questions.
 
 Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 
+Including all stories to [chapter 13](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/episode13.html). [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
+
 ## Latest update:
 10/20: Allow custom LLM use in the summarization via local api call in the [websummary_customlm.ipynb](https://github.com/TwilledWave/PRTS/blob/main/db/websummary_customlm.ipynb)
 
