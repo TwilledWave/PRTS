@@ -1,3 +1,5 @@
+10/29: Add NPC naming data from arknights.fandom for translation [translation script](https://github.com/TwilledWave/PRTS/blob/main/db/db2en.ipynb)
+
 10/20: Allow custom LLM use in the summarization via local api call in the db/websummary_customlm.ipynb
 https://github.com/TwilledWave/PRTS/blob/main/db/websummary_customlm.ipynb
 
