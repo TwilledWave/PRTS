@@ -8,6 +8,7 @@ class QuotesSpider(scrapy.Spider):
 
     start_urls = [
         "https://arknights.fandom.com/wiki/Category:NPCs",
+        "https://arknights.fandom.com/wiki/Category:NPCs?from=Selmon",
     ]
 
     def parse(self, response):

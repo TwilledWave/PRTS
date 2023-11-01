@@ -3,6 +3,7 @@
 *checkpoint.*
 *.pth
 *nsfw*
+*TEMP*
 chat.wav
 chatJP.wav
 

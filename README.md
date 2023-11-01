@@ -11,7 +11,7 @@ Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 Including all stories to [chapter 13](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/episode13.html). [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
 
 ## Latest update:
-10/29: Add NPC naming data for translation [translation script](https://github.com/TwilledWave/PRTS/blob/main/db/db2en.ipynb) [web data scrapy script from arknights.fandom](https://github.com/TwilledWave/PRTS/blob/main/db/quotes_spider_npc.py) 
+11/01: Add the experimental feature of auto generating video summary of the stories [db2video](https://github.com/TwilledWave/PRTS/blob/main/video/db2video.ipynb)
 
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
