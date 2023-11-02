@@ -28,7 +28,7 @@
 {"nameEN": "Woodrow Bianchi", "nameCN": "伍德洛·比安奇", "nameJP": null, "source": "https://arknights.fandom.com/wiki/Woodrow_Bianchi", "indexed": false},
 {"nameEN": "Ya", "nameCN": "睚", "nameJP": null, "source": "https://arknights.fandom.com/wiki/Ya", "indexed": false},
 {"nameEN": "Witch King", "nameCN": "巫王", "nameJP": null, "source": "https://arknights.fandom.com/wiki/Witch_King", "indexed": false},
-{"nameEN": "Viviana Droste", "nameCN": "“烛骑士” 薇薇安娜·德罗斯特", "nameJP": "「燭騎士」（しょくきし）ヴィヴィアナ・ドロステ", "source": "https://arknights.fandom.com/wiki/Viviana_Droste", "indexed": false},
+{"nameEN": "Viviana", "nameCN": "薇薇安娜", "nameJP": "「燭騎士」（しょくきし）ヴィヴィアナ・ドロステ", "source": "https://arknights.fandom.com/wiki/Viviana_Droste", "indexed": false},
 {"nameEN": "Wei Yenwu", "nameCN": "魏彦吾", "nameJP": "ウェイ・イェンウ", "source": "https://arknights.fandom.com/wiki/Wei_Yenwu", "indexed": false},
 {"nameEN": "Vanya", "nameCN": "万尼亚大公", "nameJP": "ワーニャ大公", "source": "https://arknights.fandom.com/wiki/Vanya", "indexed": false},
 {"nameEN": "Withered Knight", "nameCN": "凋零骑士", "nameJP": null, "source": "https://arknights.fandom.com/wiki/Withered_Knight", "indexed": false},
@@ -257,5 +257,7 @@
 {"nameEN": "Big Bob", "nameCN": "大鲍勃", "nameJP": "ビッグ・ボブ", "source": "https://arknights.fandom.com/wiki/Big_Bob", "indexed": false},
 {"nameEN": "Anita", "nameCN": "安妮塔", "nameJP": "アニタ", "source": "https://arknights.fandom.com/wiki/Anita", "indexed": false},
 {"nameEN": "Ben", "nameCN": "文索内希俄斯", "nameJP": "ベントネキシジオス", "source": "https://arknights.fandom.com/wiki/Ben", "indexed": false},
-{"nameEN": "Aya", "nameCN": null, "nameJP": "アヤ", "source": "https://arknights.fandom.com/wiki/Aya", "indexed": false}
+{"nameEN": "Aya", "nameCN": null, "nameJP": "アヤ", "source": "https://arknights.fandom.com/wiki/Aya", "indexed": false},
+{"nameEN": "Golden Charter Defender", "nameCN": "金律法卫", "nameJP": "黄金律の護衛", "source": "https://arknights.fandom.com/wiki/Aya", "indexed": false},
+{"nameEN": "Hill of Sten", "nameCN": "施彤领", "nameJP": "ステンの丘", "source": "https://arknights.fandom.com/wiki/Aya", "indexed": false}
 ]
