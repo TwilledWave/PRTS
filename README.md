@@ -17,6 +17,8 @@ Including all stories to [chapter 13](https://htmlpreview.github.io/?https://git
 
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
+To do: improve the video summary function by using char pics in the summary
+
 ## How to use:
 
 ### load the vector db in Langchain
