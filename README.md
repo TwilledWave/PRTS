@@ -11,9 +11,7 @@ Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 Including all stories to [chapter 13](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/episode13.html). [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
 
 ## Latest update:
-11/02/23:  Add "Zwillingstürme im Herbst" events into the db [story summary CN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/ZT.html) [EN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/ZT_EN.html) [JP](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/ZT_EN.html)
-
-11/01: Add the experimental feature of auto generating video summary of the stories [db2video](https://github.com/TwilledWave/PRTS/blob/main/video/db2video.ipynb)
+12/06/23:  Add "The Rides to Lake Silberneherze" [story summary](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/RS_CN.html) [EN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/RS_EN.html) [JP](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/RS_JP.html)
 
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
