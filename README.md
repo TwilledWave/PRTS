@@ -8,10 +8,10 @@ To write fan fictions and answer story questions.
 
 Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 
-Including all stories to [chapter 13](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/episode13.html). [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
+Including all stories to the current CN event. [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
 
 ## Latest update:
-01/10/23:  Add "To The Grinning Valley" [story summary](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_CN.html) [EN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_EN.html) [JP](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_JP.html)
+01/10/24:  Add "To The Grinning Valley" [story summary](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_CN.html) [EN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_EN.html) [JP](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_JP.html)
 
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
