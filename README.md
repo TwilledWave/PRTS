@@ -23,9 +23,13 @@ Including all stories to the current CN event. [ChromaDB folders](https://github
 link = "https://prts.wiki/index.php?title=RO3-END-3/NBT&action=edit"
 link2video(link, stage = "RO3-END-3", lang = "zh", writeclip = True);
 ```
+
+Chapter13 AI voice sample (CN):
+
 [![Chap13 AI-voice Sample](https://img.youtube.com/vi/bqoaPeta0d8/0.jpg)](http://www.youtube.com/watch?v=bqoaPeta0d8 "Chapter13 AI voice sample (CN)")
 
 [Use cases in video/prts2video.ipynb](https://github.com/TwilledWave/PRTS/blob/main/video/prts2video.ipynb)
+
 [VA list](https://github.com/TwilledWave/PRTS/blob/main/video/voice.json)
 
 ### load the vector db in Langchain
