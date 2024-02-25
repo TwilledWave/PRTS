@@ -11,7 +11,7 @@ Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 Including all stories to the current CN event. [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
 
 ## Latest update:
-02/25/23: New function: compile AI-voiced audiobook via [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)
+02/25/24: New function: compile AI-voiced audiobook via [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)
 
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
