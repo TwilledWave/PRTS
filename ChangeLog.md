@@ -1,3 +1,5 @@
+02/25/23: New function: compile AI-voiced audiobook via [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)
+
 12/06/23:  Add "The Rides to Lake Silberneherze" [story summary](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/RS_CN.html) [EN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/RS_EN.html) [JP](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/RS_JP.html)
 
 11/02/23:  Add "Zwillingstürme im Herbst" events into the db [story summary](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/ZT.html) [EN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/ZT_EN.html) [JP](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/ZT_JP.html)

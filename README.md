@@ -11,13 +11,22 @@ Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 Including all stories to the current CN event. [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
 
 ## Latest update:
-01/10/24:  Add "To The Grinning Valley" [story summary](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_CN.html) [EN](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_EN.html) [JP](https://htmlpreview.github.io/?https://github.com/TwilledWave/PRTS/blob/main/summary_html/TG_JP.html)
+02/25/23: New function: compile AI-voiced audiobook via [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)
 
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
-To do: improve the video summary function by using char pics in the summary
-
 ## How to use:
+
+### compile AI-voiced audiobook 
+
+```
+link = "https://prts.wiki/index.php?title=RO3-END-3/NBT&action=edit"
+link2video(link, stage = "RO3-END-3", lang = "zh", writeclip = True);
+```
+[![Chap13 AI-voice Sample](https://img.youtube.com/vi/bqoaPeta0d8/0.jpg)](http://www.youtube.com/watch?v=bqoaPeta0d8 "Chapter13 AI voice sample (CN)")
+
+[Use cases in video/prts2video.ipynb](https://github.com/TwilledWave/PRTS/blob/main/video/prts2video.ipynb)
+[VA list](https://github.com/TwilledWave/PRTS/blob/main/video/voice.json)
 
 ### load the vector db in Langchain
 ```
