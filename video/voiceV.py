@@ -32,6 +32,7 @@ def download_image(list, dict, prefix = "https://prts.wiki"):
             #check whether file exist
             my_file = Path(path)
             if not(my_file.is_file()):
+                print(prefix+link);
                 import requests
                 img_data = requests.get(prefix+link).content
                 #create directory and save the image
@@ -50,22 +51,26 @@ def json2dict(file = "voice.json", lang = "zh"):
     for l in char_list:
         nameEN = l["nameEN"];
         nameCN = l["nameCN"];
+        nameJP = l["nameJP"];
         if lang =="zh":
             dict[nameCN]=l
         if lang == "en":
             dict[nameEN]=l
+        if lang == "ja":
+            dict[nameJP]=l            
     return(dict);
 
 dict_char=read_dict('data_char.txt');
 dict_image=read_dict('data_image.txt');
 dict_voice=json2dict("voice.json", lang = "zh")
 dict_voiceEN=json2dict("voice.json", lang = "en")
+dict_voiceJA=json2dict("voice.json", lang = "ja")
 
 import moviepy.editor as mpy
 from moviepy.audio.AudioClip import AudioArrayClip
 from pathlib import Path
 
-def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwrite = False, stage = "1", lang = "zh", writeclip = True):
+def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwrite = False, stage = "1", lang = "zh", writeclip = True, lang_to = "en", translate = False):
     #download resource
     download_link(link);
     #download text
@@ -93,29 +98,54 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             if len(chars) > 0:
                 if chars[0] in dict_char:
                     char_image = folder_image + dict_char[chars[0]];
-        name = ""; text = ""
+        name = ""; text = ""; voice_name = ""
         if ("[name=" in line) and not("<" in line):
             names = re.findall('(?<=name=\")[^\"]+',line)
             texts = re.findall('(?<=\"\])[^\n]+',line)
             if len(names)>0 and len(texts)>0:
-                name = names[0]; text = texts[0];
-                voice_name = name;
+                name = names[0];                 
+                #remove the words in parenthesis
+                text = re.sub("[\（\[].*?[\）\]]", "", texts[0])
+                text = re.sub("[\(\[].*?[\)\]]", "", text)
         if ("text=" in line) and not("<" in line):            
             texts = re.findall('(?<=text=\")[^\"]+',line)
             if len(texts)>0:
                 #remove the words in parenthesis
                 text = re.sub("[\（\[].*?[\）\]]", "", texts[0])
-                voice_name = name;                
+                text = re.sub("[\(\[].*?[\)\]]", "", text)
         if not("[" in line) and not("<" in line) and not("}" in line):
             text = line[:-1];
             voice_name = "narrative"
         #remove unique character not recognized by TTS
-        text = text.replace("—","")
+        text = text.replace("—","");
+        #check translation
+        lang_voice = lang;
+        if (translate == True) & (len(text)>0):
+            print('TL:'+name+text)
+            lang_voice = lang_to;
+            #replace names in the text
+            if lang_to == "en":
+                text = multipleReplace(text = text, wordDict = dict_nameCN2EN)
+                if name in dict_nameCN2EN:
+                    name = dict_nameCN2EN[name];
+                else:
+                    name = ts.translate_text(name, translator="google",from_langugage=lang,to_language=lang_to)
+            if lang_to == "ja":
+                text = multipleReplace(text = text, wordDict = dict_nameCN2JP)
+                if name in dict_nameCN2JP:
+                    name = dict_nameCN2JP[name];
+                else:
+                    name = ts.translate_text(name, translator="google",from_langugage=lang,to_language=lang_to)
+            voice_name = name
+            text = ts.translate_text(text, translator="google",from_langugage=lang,to_language=lang_to)
+            print('TLRES:'+name+text)
         #get the voice profile
-        if lang == "zh":
+        if lang_voice == "zh":
             this_dict = dict_voice;
-        if lang == "en":
+        if lang_voice == "en":
             this_dict = dict_voiceEN;
+        if lang_voice == "ja":
+            this_dict = dict_voiceJA;            
         if not(name in this_dict):
             voice_name = "default"
             if ("冷漠" in name) or ("饥饿" in name):
@@ -130,9 +160,10 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
         #generate clip if text not empty
         prefix = str(t)
         path = folder+"/clip/"+stage+"/"+prefix+".mp4";
-        if (len(text) > 3) and (not(Path(path).is_file()) or (overwrite == True)):
-            print(str(len(text))+text+ref+prompt_language+prompt_text+background_image+char_image);
-            clips.append(text2video(text, lang = lang, img = background_image, char = char_image, char_name = name, overwrite = overwrite,
+        tmp = text.replace(".","")
+        if (len(tmp) > 3) and (not(Path(path).is_file()) or (overwrite == True)):
+            print(name+str(len(text))+text+ref+prompt_language+prompt_text+background_image+char_image);
+            clips.append(text2video(text, lang = lang_voice, img = background_image, char = char_image, char_name = name, overwrite = overwrite,
                        ref=ref, prompt_language=prompt_language, prompt_text=prompt_text, prefix = prefix, stage = stage, writeclip = writeclip, folder = folder))
         else: 
             if Path(path).is_file():
@@ -153,7 +184,7 @@ def text2video(text:str, ref, prompt_language, prompt_text, stage, overwrite, wr
     text = char_name +":      "+text
     if lang == "zh":
         txt_clip  = mpy.TextClip(text, fontsize = 15, color = "white", font = "Microsoft-YaHei-&-Microsoft-YaHei-UI")
-    elif lang == "jp":
+    elif (lang == "jp") or (lang == "ja"):
         txt_clip  = mpy.TextClip(text, fontsize = 15, color = "white", font = "wqy-microhei.ttc")
     else:
         txt_clip  = mpy.TextClip(text, fontsize = 15, color = "white")
@@ -200,3 +231,37 @@ def text2audio(text:str, lang:str = "zh", audio = "./cache/audio/1.wav",
         f.write(response.content)
     return()
 
+#translate the prts from cn 
+#read the character json and output the dictionary for translation
+def json2dict(file = "chars.json", lang_to = "en"):
+    import json, time
+    dict = {}
+    # Opening JSON file
+    with open(file, encoding="utf-8") as f:
+        char_list = json.load(f)
+    for l in char_list:
+        nameEN = l["nameEN"];
+        nameCN = l["nameCN"];
+        nameJP = l["nameJP"];
+        #don't replace name with only 1 character
+        if lang_to == "en":
+            if (nameCN != None) & (nameEN != None):
+                if len(nameCN)>1:
+                    dict[nameCN]=nameEN
+        if lang_to == "ja":                    
+            if (nameCN != None) & (nameJP != None):
+                if len(nameCN)>1:
+                    dict[nameCN]=nameJP
+    dict["明日方舟"] = "Arknights";
+    dict["narrative"] = "narrative";
+    return(dict);
+
+#replace every instance in the source by dict
+def multipleReplace(text, wordDict):
+    for key in wordDict:
+        text = text.replace(key, wordDict[key])
+    return text
+
+import translators as ts
+dict_nameCN2EN=json2dict('../db/chars.json', lang_to = "en");
+dict_nameCN2JP=json2dict('../db/chars.json', lang_to = "ja");
