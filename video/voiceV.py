@@ -98,12 +98,12 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             if len(chars) > 0:
                 if chars[0] in dict_char:
                     char_image = folder_image + dict_char[chars[0]];
-        name = ""; text = ""; voice_name = ""
+        name = ""; text = ""; voice_name = "default"
         if ("[name=" in line) and not("<" in line):
             names = re.findall('(?<=name=\")[^\"]+',line)
             texts = re.findall('(?<=\"\])[^\n]+',line)
             if len(names)>0 and len(texts)>0:
-                name = names[0];                 
+                name = names[0]; voice_name = name;                
                 #remove the words in parenthesis
                 text = re.sub("[\（\[].*?[\）\]]", "", texts[0])
                 text = re.sub("[\(\[].*?[\)\]]", "", text)

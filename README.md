@@ -11,17 +11,25 @@ Built by summarizing the story diaglogues on arknights.fandom.com and prts.wiki
 Including all stories to the current CN event. [ChromaDB folders](https://github.com/TwilledWave/PRTS/tree/main/db). [HTML story snippets with CG](https://github.com/TwilledWave/PRTS/tree/main/summary_html). 
 
 ## Latest update:
+03/07/24: Add translation function in AI-voiced audiobook
+
 02/25/24: New function: compile AI-voiced audiobook via [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)
 
 [Change Log](https://github.com/TwilledWave/PRTS/blob/main/ChangeLog.md)
 
 ## How to use:
 
-### compile AI-voiced audiobook 
+### compile AI-voiced audiobook from any story script in the PRTS link
 
 ```
 link = "https://prts.wiki/index.php?title=RO3-END-3/NBT&action=edit"
 link2video(link, stage = "RO3-END-3", lang = "zh", writeclip = True);
+```
+
+compile EN audio from CN, using translation
+
+```
+link2video(link, stage = "RO3-END-3", lang = "zh", writeclip = True, lang_to = "en", translate = True);
 ```
 
 Chapter13 AI voice sample (CN):
