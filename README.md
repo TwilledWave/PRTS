@@ -26,15 +26,15 @@ link = "https://prts.wiki/index.php?title=RO3-END-3/NBT&action=edit"
 link2video(link, stage = "RO3-END-3", lang = "zh", writeclip = True);
 ```
 
-compile EN audio from CN, using translation
+compile EN audio from CN script, using translation
 
 ```
 link2video(link, stage = "RO3-END-3", lang = "zh", writeclip = True, lang_to = "en", translate = True);
 ```
 
-Chapter13 AI voice sample (CN):
+Sample: Lucent Arrowhead AI Voice
 
-[![Chap13 AI-voice Sample](https://img.youtube.com/vi/bqoaPeta0d8/0.jpg)](http://www.youtube.com/watch?v=bqoaPeta0d8 "Chapter13 AI voice sample (CN)")
+[![Chap13 AI-voice Sample](https://img.youtube.com/vi/JwCrlk85Brw/0.jpg)](https://www.youtube.com/watch?v=JwCrlk85Brw&list=PLs8TZNEg0Ubg9kNm1gEA9PBPJQqyLoC5u&index=3&t=1s&ab_channel=TwilledWave "Lucent Arrowhead AI Voice")
 
 [Use cases in video/prts2video.ipynb](https://github.com/TwilledWave/PRTS/blob/main/video/prts2video.ipynb)
 
