@@ -17,17 +17,18 @@ def download_link(link):
     myfile = str(myfile).replace(" ","");
     images = re.findall('(?<=image=\")[\w_#$]+',str(myfile))
     chars = re.findall('(?<=\",name=\")[\w_#$]+',str(myfile))
-    download_image(images, dict_image);
+    download_image(images, dict_image, image = True);
     download_image(chars, dict_char);
     return("download complete");
 
-def download_image(list, dict, prefix = "https://prts.wiki"):
+def download_image(list, dict, prefix = "", image = False):
     for l in list:
+        l = l.replace("#","-")
         if "bg_"+l in dict:
             l = "bg_"+l
         if l in dict:
             link = dict[l];
-            path = "./cache"+link
+            path = "./cache"+link.replace("https://media.prts.wiki/","/images/")
             from pathlib import Path
             #check whether file exist
             my_file = Path(path)
@@ -39,7 +40,16 @@ def download_image(list, dict, prefix = "https://prts.wiki"):
                 import os
                 Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
                 with open(path, 'wb') as handler:
-                    handler.write(img_data)            
+                    handler.write(img_data)
+                if image == True:
+                    from PIL import Image
+                    size = (1024, 576)
+                    #resize image
+                    print(path)
+                    im = Image.open(path)
+                    im = im.resize(size, Image.Resampling.LANCZOS)
+                    im.save(path, "PNG")
+
 
 #read the character json and output the dictionary for translation
 def json2dict(file = "voice.json", lang = "zh"):
@@ -74,7 +84,7 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
     #download resource
     download_link(link);
     #download text
-    import urllib
+    import urllib, time
     f = urllib.request.urlopen(link)  
     html = f.readlines()
     #process
@@ -91,13 +101,14 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
                 else:
                     char_image = "";
                 if this_image in dict_image:
-                    background_image = folder_image + dict_image[this_image];
+                    background_image = folder_image + dict_image[this_image].replace("https://media.prts.wiki/","/images/");
         if "[charslot(" in line:
             line=line.replace(" ","");
             chars = re.findall('(?<=\",name=\")[\w_#$]+',line)
             if len(chars) > 0:
+                chars[0] = chars[0].replace("#","-")
                 if chars[0] in dict_char:
-                    char_image = folder_image + dict_char[chars[0]];
+                    char_image = folder_image + dict_char[chars[0]].replace("https://media.prts.wiki/","/images/");
         name = ""; text = ""; voice_name = "default"
         if ("[name=" in line) and not("<" in line):
             names = re.findall('(?<=name=\")[^\"]+',line)
@@ -120,7 +131,9 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
         text = text.replace("—","");
         #check translation
         lang_voice = lang;
-        if (translate == True) & (len(text)>0):
+        prefix = str(t)
+        path = folder+"/clip/"+stage+"/"+prefix+".mp4";
+        if (translate == True) & (len(text)>0) & (not(Path(path).is_file())):
             print('TL:'+name+text)
             lang_voice = lang_to;
             #replace names in the text
@@ -137,7 +150,14 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
                 else:
                     name = ts.translate_text(name, translator="google",from_langugage=lang,to_language=lang_to)
             voice_name = name
-            text = ts.translate_text(text, translator="google",from_langugage=lang,to_language=lang_to)
+            for i in range(0,10):
+                try:
+                    text = ts.translate_text(text, translator="google",from_langugage=lang,to_language=lang_to)
+                except:
+                    time.sleep(3);
+                    continue
+            text = text.replace("intersection","");
+            text = text.replace("Intersection","");
             print('TLRES:'+name+text)
         #get the voice profile
         if lang_voice == "zh":
@@ -150,9 +170,9 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             voice_name = "default"
             if ("冷漠" in name) or ("饥饿" in name):
                 voice_name = "冷漠" 
-            if ("残忍" in name) or ("愤" in name) or ("困倦" in name):
+            if ("残忍" in name) or ("愤" in name) or ("困倦" in name) or ("Rude" in name):
                 voice_name = "残忍"                 
-            if ("女" in name) or ("太太" in name) or ("lady" in name) or ("girl" in name) or ("woman" in name) or ("female" in name):
+            if ("女" in name) or ("太太" in name) or ("lady" in name.lower()) or ("girl" in name.lower()) or ("woman" in name.lower()) or ("female" in name.lower()):
                 voice_name = "defaultF"
         ref = this_dict[voice_name]["voice"];
         prompt_language = this_dict[voice_name]["lang"];
@@ -161,10 +181,12 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
         prefix = str(t)
         path = folder+"/clip/"+stage+"/"+prefix+".mp4";
         tmp = text.replace(".","")
-        if (len(tmp) > 3) and (not(Path(path).is_file()) or (overwrite == True)):
-            print(name+str(len(text))+text+ref+prompt_language+prompt_text+background_image+char_image);
+        if ((len(tmp) > 3) and (not(Path(path).is_file())) or (overwrite == True)):
+            print(prefix+name+str(len(text))+text);
+            print(ref+prompt_language+prompt_text+background_image+char_image);
             clips.append(text2video(text, lang = lang_voice, img = background_image, char = char_image, char_name = name, overwrite = overwrite,
-                       ref=ref, prompt_language=prompt_language, prompt_text=prompt_text, prefix = prefix, stage = stage, writeclip = writeclip, folder = folder))
+                        ref=ref, prompt_language=prompt_language, prompt_text=prompt_text, prefix = prefix, stage = stage, writeclip = writeclip,
+                        folder = folder))
         else: 
             if Path(path).is_file():
                 clips.append(mpy.VideoFileClip(path))
