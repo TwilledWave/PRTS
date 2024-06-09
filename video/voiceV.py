@@ -24,6 +24,8 @@ def download_link(link):
 def download_image(list, dict, prefix = "", image = False):
     for l in list:
         l = l.replace("#","-")
+        if not(l in dict):
+            l = l.replace("-","_")
         if "bg_"+l in dict:
             l = "bg_"+l
         if l in dict:
@@ -35,7 +37,14 @@ def download_image(list, dict, prefix = "", image = False):
             if not(my_file.is_file()):
                 print(prefix+link);
                 import requests
-                img_data = requests.get(prefix+link).content
+                #while to retry when download timeout
+                tmp = True;
+                while tmp:
+                    try:
+                        img_data = requests.get(prefix+link, timeout=30).content
+                        tmp = False
+                    except requests.exceptions.Timeout:
+                        print("Timed out")
                 #create directory and save the image
                 import os
                 Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
@@ -107,8 +116,12 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             chars = re.findall('(?<=\",name=\")[\w_#$]+',line)
             if len(chars) > 0:
                 chars[0] = chars[0].replace("#","-")
+                if not(chars[0] in dict_char):
+                    chars[0] = chars[0].replace("-","_")
                 if chars[0] in dict_char:
                     char_image = folder_image + dict_char[chars[0]].replace("https://media.prts.wiki/","/images/");
+                else:
+                    char_image = "";
         name = ""; text = ""; voice_name = "default"
         if ("[name=" in line) and not("<" in line):
             names = re.findall('(?<=name=\")[^\"]+',line)
@@ -153,6 +166,8 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             for i in range(0,10):
                 try:
                     text = ts.translate_text(text, translator="google",from_langugage=lang,to_language=lang_to)
+                    #convert all capital words to words with the first letter capitalized.
+                    text = capitalize_first_letter(text)
                 except:
                     time.sleep(3);
                     continue
@@ -180,13 +195,17 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
         #generate clip if text not empty
         prefix = str(t)
         path = folder+"/clip/"+stage+"/"+prefix+".mp4";
+        text = text.replace("-","")
         tmp = text.replace(".","")
         if ((len(tmp) > 3) and (not(Path(path).is_file())) or (overwrite == True)):
             print(prefix+name+str(len(text))+text);
             print(ref+prompt_language+prompt_text+background_image+char_image);
-            clips.append(text2video(text, lang = lang_voice, img = background_image, char = char_image, char_name = name, overwrite = overwrite,
-                        ref=ref, prompt_language=prompt_language, prompt_text=prompt_text, prefix = prefix, stage = stage, writeclip = writeclip,
-                        folder = folder))
+            try:
+                clips.append(text2video(text, lang = lang_voice, img = background_image, char = char_image, char_name = name, overwrite = overwrite,
+                            ref=ref, prompt_language=prompt_language, prompt_text=prompt_text, prefix = prefix, stage = stage, writeclip = writeclip,
+                            folder = folder))
+            except Exception as e:
+                print(str(e))
         else: 
             if Path(path).is_file():
                 clips.append(mpy.VideoFileClip(path))
@@ -195,24 +214,28 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
     concat_clip.close();
     return("video run success for "+link);
 
-def text2video(text:str, ref, prompt_language, prompt_text, stage, overwrite, writeclip = True,
+def text2video(text:str, stage, ref = "", prompt_language = "", prompt_text = "", overwrite = False, writeclip = True,
                img = "", char = "", char_name = "", lang:str = "zh", title = "      ", folder = "./cache/", prefix = "1"):
     #make audio
     path = Path(folder+"audio/"+stage+"/"+prefix+".wav");
     if (not(path.is_file()) or (overwrite == True)):
-        o4 = text2audio(text, lang = lang, audio = folder+"audio/"+stage+"/"+prefix+".wav", ref=ref, prompt_language=prompt_language, prompt_text=prompt_text);
+        if ref == "":
+            o4 = text2audio(text, lang = lang, audio = folder+"audio/"+stage+"/"+prefix+".wav");
+        else:
+            o4 = text2audio(text, lang = lang, audio = folder+"audio/"+stage+"/"+prefix+".wav", ref=ref, prompt_language=prompt_language, prompt_text=prompt_text);
     audio = mpy.AudioFileClip(folder+"audio/"+stage+"/"+prefix+".wav")
     #make text
     text = char_name +":      "+text
     if lang == "zh":
-        txt_clip  = mpy.TextClip(text, fontsize = 15, color = "white", font = "Microsoft-YaHei-&-Microsoft-YaHei-UI")
+        font = "Microsoft-YaHei-&-Microsoft-YaHei-UI"
     elif (lang == "jp") or (lang == "ja"):
-        txt_clip  = mpy.TextClip(text, fontsize = 15, color = "white", font = "wqy-microhei.ttc")
+        font = "wqy-microhei.ttc"
     else:
-        txt_clip  = mpy.TextClip(text, fontsize = 15, color = "white")
+        font = "Microsoft-YaHei-&-Microsoft-YaHei-UI"
+    txt_clip  = mpy.TextClip(text, fontsize = 15, color = "white", font = font)
+    title_clip  = mpy.TextClip(title, fontsize = 20, color = "white", font = font)
     txt_clip = txt_clip.margin(bottom=100, opacity=0).set_pos('bottom').set_duration(audio.duration)
-    title_clip  = mpy.TextClip(title, fontsize = 40, color = "black")
-    title_clip = title_clip.set_pos('top').set_duration(audio.duration)
+    title_clip = title_clip.set_pos('center').set_duration(audio.duration)
     #make video
     if img != "":
         clip = mpy.ImageClip(img, duration = audio.duration).resize(width=1024, height=576)
@@ -242,11 +265,12 @@ def text2audio(text:str, lang:str = "zh", audio = "./cache/audio/1.wav",
     response = requests.post(
         URI,
         json={
-        "refer_wav_path": ref,
+        "text_split_method": "cut5",               
+        "ref_audio_path": ref,
         "prompt_text": prompt_text,
-        "prompt_language": prompt_language,
+        "prompt_lang": prompt_language,
         "text": text,
-        "text_language": lang
+        "text_lang": lang
         },
     )
     with open(audio, "wb") as f:
@@ -283,6 +307,18 @@ def multipleReplace(text, wordDict):
     for key in wordDict:
         text = text.replace(key, wordDict[key])
     return text
+
+# Function to convert all capital words to words with the first letter capitalized.
+def capitalize_first_letter(text):
+    text = text.replace("'s","")
+    text = text.replace("'","")
+    words = text.split()
+    processed_words = []
+    for word in words:
+        if word.isupper():
+            word = word.capitalize()
+        processed_words.append(word)
+    return ' '.join(processed_words)
 
 import translators as ts
 dict_nameCN2EN=json2dict('../db/chars.json', lang_to = "en");
