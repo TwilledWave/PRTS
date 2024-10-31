@@ -65,7 +65,7 @@ def image2video(link, duration, folder_image = "./cache/"):
     myfile = f.read()
     myfile = str(myfile).replace(" ","");
     #get the non-background images, if zero, get the background
-    images = re.findall('(?<=image\(image=\")[\w_#$]+',str(myfile))
+    images = re.findall('(?<=mage\(image=\")[\w_#$]+',str(myfile))
     if len(images)==0:
         images = re.findall('(?<=image=\")[\w_#$]+',str(myfile))
         for i in range(len(images)):
@@ -74,6 +74,8 @@ def image2video(link, duration, folder_image = "./cache/"):
     if len(images)==0:
         clips = [mpy.ColorClip(color = [0,0,0], size = (1024, 576)).set_duration(duration)]
     else:
+        if len(images)>3:
+            images=images[:3]
         for i in images:
             if i in dict_image:
                 img = folder_image + dict_image[i].replace("https://media.prts.wiki/","/images/");

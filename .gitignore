@@ -4,8 +4,7 @@
 *.pth
 *nsfw*
 *TEMP*
-chat.wav
-chatJP.wav
+*.wav
 
 test/
 cache/
