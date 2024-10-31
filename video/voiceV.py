@@ -59,6 +59,27 @@ def download_image(list, dict, prefix = "", image = False):
                     im = im.resize(size, Image.Resampling.LANCZOS)
                     im.save(path, "PNG")
 
+def image2video(link, duration, folder_image = "./cache/"):        
+    import urllib
+    f = urllib.request.urlopen(link)  
+    myfile = f.read()
+    myfile = str(myfile).replace(" ","");
+    #get the non-background images, if zero, get the background
+    images = re.findall('(?<=image\(image=\")[\w_#$]+',str(myfile))
+    if len(images)==0:
+        images = re.findall('(?<=image=\")[\w_#$]+',str(myfile))
+        for i in range(len(images)):
+            images[i] = "bg_"+images[i];
+    clips = [];
+    if len(images)==0:
+        clips = [mpy.ColorClip(color = [0,0,0], size = (1024, 576)).set_duration(duration)]
+    else:
+        for i in images:
+            if i in dict_image:
+                img = folder_image + dict_image[i].replace("https://media.prts.wiki/","/images/");
+                clip = mpy.ImageClip(img, duration = duration/len(images)).resize(width=1024, height=576)
+                clips.append(clip)
+    return(mpy.concatenate_videoclips(clips, method="chain"))
 
 #read the character json and output the dictionary for translation
 def json2dict(file = "voice.json", lang = "zh"):
@@ -89,7 +110,7 @@ import moviepy.editor as mpy
 from moviepy.audio.AudioClip import AudioArrayClip
 from pathlib import Path
 
-def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwrite = False, stage = "1", lang = "zh", writeclip = True, lang_to = "en", translate = False):
+def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwrite = False, stage = "1", lang = "zh", writeclip = True, lang_to = "en", translate = False, translate_using_llm = False):
     #download resource
     download_link(link);
     #download text
@@ -165,7 +186,10 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             voice_name = name
             for i in range(0,10):
                 try:
-                    text = ts.translate_text(text, translator="google",from_langugage=lang,to_language=lang_to)
+                    if translate_using_llm:
+                        text = translate_llm(text, lang = lang_to)
+                    else:
+                        text = ts.translate_text(text, translator="google",from_langugage=lang,to_language=lang_to)
                     #convert all capital words to words with the first letter capitalized.
                     text = capitalize_first_letter(text)
                 except:
@@ -186,7 +210,9 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             if ("冷漠" in name) or ("饥饿" in name):
                 voice_name = "冷漠" 
             if ("残忍" in name) or ("愤" in name) or ("困倦" in name) or ("Rude" in name):
-                voice_name = "残忍"                 
+                voice_name = "残忍"
+            if ("童" in name) or ("young" in name.lower()) or ("child" in name.lower()):
+                voice_name = "defaultChild"                
             if ("女" in name) or ("太太" in name) or ("lady" in name.lower()) or ("girl" in name.lower()) or ("woman" in name.lower()) or ("female" in name.lower()):
                 voice_name = "defaultF"
         ref = this_dict[voice_name]["voice"];
@@ -252,12 +278,14 @@ def text2video(text:str, stage, ref = "", prompt_language = "", prompt_text = ""
     clip.audio_fadein(fade_in).audio_fadeout(fade_in)
     if writeclip == True:
         clip.write_videofile(folder+"/clip/"+stage+"/"+prefix+".mp4", verbose=False, logger=None);
-    return(clip)
+    return(clip, txt_clip, title_clip)
+
+
 
 def text2audio(text:str, lang:str = "zh", audio = "./cache/audio/1.wav", 
-               ref = "sample/nearl.wav",
+               ref = "sample/Liskarm.wav",
                prompt_language = "en",
-               prompt_text = "I'm gladdened to be by your side once again, Doctor... Yes, may the light be with you as always."):
+               prompt_text = "Take all missions seriously: that's the guiding rule for us security professionals."):
     #tts via api
     import requests
     HOST = 'localhost:9880'
@@ -265,7 +293,30 @@ def text2audio(text:str, lang:str = "zh", audio = "./cache/audio/1.wav",
     response = requests.post(
         URI,
         json={
-        "text_split_method": "cut5",               
+        "refer_wav_path": ref,
+        "prompt_text": prompt_text,
+        "prompt_language": prompt_language,
+        "text": text,
+        "text_language": lang
+        },
+    )
+    with open(audio, "wb") as f:
+        f.write(response.content)
+    return()
+
+def text2audio2(text:str, lang:str = "zh", audio = "./cache/audio/1.wav", 
+               ref = "sample/Liskarm.wav",
+               prompt_language = "en",
+               prompt_text = "Take all missions seriously: that's the guiding rule for us security professionals."):
+    #tts via api
+    import requests
+    HOST = 'localhost:9880'
+    URI = f'http://{HOST}'
+    cut = "cut5";
+    response = requests.post(
+        URI,
+        json={
+        "text_split_method": cut,               
         "ref_audio_path": ref,
         "prompt_text": prompt_text,
         "prompt_lang": prompt_language,
@@ -298,7 +349,6 @@ def json2dict(file = "chars.json", lang_to = "en"):
             if (nameCN != None) & (nameJP != None):
                 if len(nameCN)>1:
                     dict[nameCN]=nameJP
-    dict["明日方舟"] = "Arknights";
     dict["narrative"] = "narrative";
     return(dict);
 
@@ -320,6 +370,53 @@ def capitalize_first_letter(text):
         processed_words.append(word)
     return ' '.join(processed_words)
 
+#redefine the translate function using llm
+def translate_llm(text, lang = "en"):
+    if lang == "en":
+        lang = "English"
+    prompt = "translate the following text to " + lang +" , output translation results only \n "+ text +" \n Translation: ";
+    text = llm._call(prompt = prompt)
+    truncated_text = text.split('\n', 1)[0]
+    return truncated_text
+
+from typing import Any, List, Mapping, Optional
+from langchain.llms.base import LLM
+from langchain.callbacks.manager import CallbackManagerForLLMRun
+import requests
+
+class CustomLLM2(LLM):
+    @property
+    def _llm_type(self) -> str:
+        return "custom"
+
+    def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+        if isinstance(stop, list):
+            stop = stop + ["\n###","\nObservation:","\n问题","\nQuestion:"]
+        HOST = 'localhost:5000'
+        URI = f'http://{HOST}/v1/chat/completions'
+
+        response = requests.post(
+            URI,
+            json={
+                "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                  }
+                ],
+                "mode": "instruct",
+                "instruction_template": "Alpaca",
+            },
+        )
+        response.raise_for_status()
+        return response.json()['choices'][0]['message']['content']
+  
+    @property
+    def _identifying_params(self) -> Mapping[str, Any]:
+        """Get the identifying parameters."""
+        return {}
+
 import translators as ts
+llm = CustomLLM2(temperature=0.5)
 dict_nameCN2EN=json2dict('../db/chars.json', lang_to = "en");
 dict_nameCN2JP=json2dict('../db/chars.json', lang_to = "ja");
