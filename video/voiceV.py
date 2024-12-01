@@ -229,9 +229,10 @@ def link2video(link:str, folder = "./cache/", folder_image = "./cache/", overwri
             print(prefix+name+str(len(text))+text);
             print(ref+prompt_language+prompt_text+background_image+char_image);
             try:
-                clips.append(text2video(text, lang = lang_voice, img = background_image, char = char_image, char_name = name, overwrite = overwrite,
+                clip = text2video(text, lang = lang_voice, img = background_image, char = char_image, char_name = name, overwrite = overwrite,
                             ref=ref, prompt_language=prompt_language, prompt_text=prompt_text, prefix = prefix, stage = stage, writeclip = writeclip,
-                            folder = folder))
+                            folder = folder)[0]
+                clips.append(clip)
             except Exception as e:
                 print(str(e))
         else: 
@@ -292,6 +293,8 @@ def text2audio(text:str, lang:str = "zh", audio = "./cache/audio/1.wav",
     import requests
     HOST = 'localhost:9880'
     URI = f'http://{HOST}'
+    #replace the words hard to pronounce
+    text = multipleReplace(text = text, wordDict = dict_voice)
     response = requests.post(
         URI,
         json={
@@ -422,3 +425,7 @@ import translators as ts
 llm = CustomLLM2(temperature=0.5)
 dict_nameCN2EN=json2dict('../db/chars.json', lang_to = "en");
 dict_nameCN2JP=json2dict('../db/chars.json', lang_to = "ja");
+#dict replacement for better pronunciation
+dict_voice = {
+    "Originium": "Origin'nium", "Kazdel": "Kaz del",
+}
