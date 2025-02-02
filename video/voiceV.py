@@ -288,7 +288,7 @@ def text2video(text:str, stage, ref = "", prompt_language = "", prompt_text = ""
 def text2audio(text:str, lang:str = "zh", audio = "./cache/audio/1.wav", 
                ref = "sample/Liskarm.wav",
                prompt_language = "en",
-               prompt_text = "Take all missions seriously: that's the guiding rule for us security professionals."):
+               prompt_text = "Take all missions seriously: that's the guiding rule for us security professionals.", stream = False):
     #tts via api
     import requests
     HOST = 'localhost:9880'
@@ -302,7 +302,8 @@ def text2audio(text:str, lang:str = "zh", audio = "./cache/audio/1.wav",
         "prompt_text": prompt_text,
         "prompt_language": prompt_language,
         "text": text,
-        "text_language": lang
+        "text_language": lang,
+        "stream": stream
         },
     )
     with open(audio, "wb") as f:
@@ -427,5 +428,5 @@ dict_nameCN2EN=json2dict('../db/chars.json', lang_to = "en");
 dict_nameCN2JP=json2dict('../db/chars.json', lang_to = "ja");
 #dict replacement for better pronunciation
 dict_voice = {
-    "Originium": "Origin'nium", "Kazdel": "Kaz del",
+    "Originium": "Origin'nium", "Kazdel": "Kaz del", "Ægirian":"Agirian", "Ægir":"Agir", "Ulpianus":"Upianus", "Gladiia":"Gladia"
 }
